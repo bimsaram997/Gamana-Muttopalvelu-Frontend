@@ -18,11 +18,31 @@
   --gamana-text-dark: #1A1A1A;    /* Primary Text */
 }
 
+/* Global Layout & Overflow Reset */
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
 body {
-  margin: 0;
   font-family: 'Montserrat', sans-serif !important;
   color: var(--gamana-text-dark);
   background-color: #ffffff;
+}
+
+/* Ensure Angular Component Hosts take full layout width */
+app-root, 
+app-landing-page, 
+app-base-layout,
+app-nav-bar,
+app-hero-section {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 /* Custom Gamana Typography */

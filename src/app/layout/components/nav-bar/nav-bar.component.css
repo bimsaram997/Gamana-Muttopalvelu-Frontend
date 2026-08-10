@@ -1,4 +1,26 @@
 /* Dark Burgundy Background matching flyer footer */
+
+:host {
+  display: block;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+header {
+  width: 100% !important;
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  margin: 0 !important;
+}
+
+/* Ensure navbar containers don't create unwanted outer side spacing on wide screens */
+.navbar, .top-bar {
+  width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
 .top-bar {
   background-color: #300C0E !important;
 }
