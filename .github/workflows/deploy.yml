@@ -1,6 +1,7 @@
 name: CI/CD Multi-Environment Pipeline
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - dev
@@ -26,13 +27,13 @@ jobs:
       - name: Build Application
         run: npm run build -- --configuration=production
 
-      <!-- Deploy to Staging / Dev Render Service -->
+      # Deploy to Dev Render Service
       - name: Trigger Render Dev Deployment
         if: github.ref == 'refs/heads/dev'
         run: |
           curl -X POST "${{ secrets.RENDER_DEV_DEPLOY_HOOK }}"
 
-      <!-- Deploy to Production Render Service -->
+      # Deploy to Production Render Service
       - name: Trigger Render Production Deployment
         if: github.ref == 'refs/heads/main'
         run: |
