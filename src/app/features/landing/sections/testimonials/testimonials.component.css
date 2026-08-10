@@ -1,0 +1,40 @@
+:host {
+  display: block;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.testimonials-section {
+  font-family: 'Montserrat', sans-serif;
+
+}
+
+.text-gamana-red {
+  color: var(--gamana-red, #D2232A) !important;
+}
+
+.fw-black {
+  font-weight: 900 !important;
+}
+
+.fs-7 {
+  font-size: 0.875rem;
+}
+
+.fs-8 {
+  font-size: 0.725rem;
+}
+
+.hover-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hover-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+mat-icon {
+  vertical-align: middle;
+}
