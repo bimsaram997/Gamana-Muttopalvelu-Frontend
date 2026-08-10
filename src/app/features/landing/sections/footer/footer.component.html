@@ -1,0 +1,73 @@
+<footer id="contact" class="footer-section bg-gamana-burgundy text-white pt-5 pb-3">
+  <div class="container py-lg-3">
+    <div class="row g-4 justify-content-between mb-4">
+      
+      <!-- Brand & Mission Column -->
+      <div class="col-12 col-md-4">
+        <h4 class="fw-black text-white mb-2">GAMANA</h4>
+        <small class="text-uppercase fw-bold text-gamana-red tracking-wider d-block mb-3 fs-8">
+          MUUTTOPALVELU • TAMPERE
+        </small>
+        <p class="text-white-80 fs-7 mb-4">
+          Professional, reliable, and affordable moving services across Tampere and Finland. Your belongings, our responsibility.
+        </p>
+        <div class="d-flex align-items-center gap-2">
+          <a [href]="whatsappHref" target="_blank" class="btn btn-success rounded-circle d-flex align-items-center justify-content-center p-2 shadow-sm" style="width: 40px; height: 40px;">
+            <i class="bi bi-whatsapp fs-5"></i>
+          </a>
+          <a [href]="phoneHref" class="btn btn-gamana-red rounded-circle d-flex align-items-center justify-content-center p-2 shadow-sm" style="width: 40px; height: 40px;">
+            <mat-icon class="fs-5">phone</mat-icon>
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick Navigation Links -->
+      <div class="col-6 col-md-2">
+        <h6 class="fw-bold text-white text-uppercase tracking-wider fs-7 mb-3">Services</h6>
+        <ul class="list-unstyled fs-7 text-white-80 d-flex flex-column gap-2 mb-0">
+          <li><a routerLink="/" fragment="services" class="text-white-80 text-decoration-none">Apartment Move</a></li>
+          <li><a routerLink="/" fragment="services" class="text-white-80 text-decoration-none">Store Pickups</a></li>
+          <li><a routerLink="/" fragment="services" class="text-white-80 text-decoration-none">City Transfers</a></li>
+          <li><a routerLink="/" fragment="services" class="text-white-80 text-decoration-none">Muuttosiivous</a></li>
+        </ul>
+      </div>
+
+      <!-- Service Areas Column -->
+      <div class="col-6 col-md-3">
+        <h6 class="fw-bold text-white text-uppercase tracking-wider fs-7 mb-3">Service Area</h6>
+        <ul class="list-unstyled fs-7 text-white-80 d-flex flex-column gap-2 mb-0">
+          <li>Tampere & Central Region</li>
+          <li>Hervanta, Pirkkala, Lempäälä</li>
+          <li>Nokia, Ylöjärvi, Kangasala</li>
+          <li>Nationwide Intercity Delivery</li>
+        </ul>
+      </div>
+
+      <!-- Direct Contact Column -->
+      <div class="col-12 col-md-3">
+        <h6 class="fw-bold text-white text-uppercase tracking-wider fs-7 mb-3">Contact Us</h6>
+        <div class="d-flex flex-column gap-3 fs-7 text-white-80">
+          <div class="d-flex align-items-center gap-2">
+            <mat-icon class="text-gamana-red">phone</mat-icon>
+            <a [href]="phoneHref" class="text-white text-decoration-none fw-bold">{{ phoneNumber }}</a>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <mat-icon class="text-gamana-red">schedule</mat-icon>
+            <span>Mon – Sun: 08:00 – 20:00</span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <mat-icon class="text-gamana-red">location_on</mat-icon>
+            <span>Tampere, Finland</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Divider Line & Copyright Footer -->
+    <div class="border-top border-secondary border-opacity-25 pt-3 mt-4 d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 fs-8 text-white-80">
+      <span>&copy; {{ currentYear }} Gamana Muuttopalvelu. All rights reserved.</span>
+      <span>Starting at <strong>25€/h</strong> in Tampere.</span>
+    </div>
+  </div>
+</footer>

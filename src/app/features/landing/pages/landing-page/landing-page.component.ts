@@ -4,6 +4,7 @@ import { HowItWorksComponent } from '../../sections/how-it-works/how-it-works.co
 import { ServiceSectionComponent } from '../../sections/service-section/service-section.component';
 import { PricingPackagesComponent } from '../../sections/pricing-packages/pricing-packages.component';
 import { TestimonialsComponent } from '../../sections/testimonials/testimonials.component';
+import { FooterComponent } from '../../sections/footer/footer.component';
 
 @Component({
   selector: 'app-landing-page',
@@ -12,7 +13,8 @@ import { TestimonialsComponent } from '../../sections/testimonials/testimonials.
     HowItWorksComponent, 
     ServiceSectionComponent,
     PricingPackagesComponent,
-    TestimonialsComponent],
+    TestimonialsComponent,
+    FooterComponent],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.css'
 })
