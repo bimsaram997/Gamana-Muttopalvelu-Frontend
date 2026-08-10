@@ -1,0 +1,65 @@
+:host {
+  display: block;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.pricing-section {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #F8F9FA !important;
+}
+
+.text-gamana-red {
+  color: var(--gamana-red, #D2232A) !important;
+}
+
+.bg-gamana-red {
+  background-color: var(--gamana-red, #D2232A) !important;
+}
+
+.btn-gamana-red {
+  background-color: var(--gamana-red, #D2232A) !important;
+  color: #FFFFFF !important;
+  transition: all 0.2s ease;
+}
+
+.btn-gamana-red:hover {
+  background-color: var(--gamana-red-hover, #B0181E) !important;
+  color: #FFFFFF !important;
+}
+
+.fw-black {
+  font-weight: 900 !important;
+}
+
+.fs-7 {
+  font-size: 0.875rem;
+}
+
+.fs-8 {
+  font-size: 0.725rem;
+}
+
+.tracking-wider {
+  letter-spacing: 1px;
+}
+
+/* Card Hover & Highlight Styling */
+.pricing-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.pricing-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+.featured-card {
+  border: 2px solid var(--gamana-red, #D2232A) !important;
+  box-shadow: 0 10px 30px rgba(210, 35, 42, 0.12) !important;
+}
+
+mat-icon {
+  vertical-align: middle;
+}
