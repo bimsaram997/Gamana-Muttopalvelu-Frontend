@@ -27,14 +27,22 @@ jobs:
       - name: Build Application
         run: npm run build -- --configuration=production
 
-      # Deploy to Dev Render Service
+      # Deploy to Dev Render Service (Placeholder until secret is added)
       - name: Trigger Render Dev Deployment
         if: github.ref == 'refs/heads/dev'
         run: |
-          curl -X POST "${{ secrets.RENDER_DEV_DEPLOY_HOOK }}"
+          if [ -n "${{ secrets.RENDER_DEV_DEPLOY_HOOK }}" ]; then
+            curl -X POST "${{ secrets.RENDER_DEV_DEPLOY_HOOK }}"
+          else
+            echo "RENDER_DEV_DEPLOY_HOOK secret is not set yet. Skipping Render trigger."
+          fi
 
-      # Deploy to Production Render Service
+      # Deploy to Production Render Service (Placeholder until secret is added)
       - name: Trigger Render Production Deployment
         if: github.ref == 'refs/heads/main'
         run: |
-          curl -X POST "${{ secrets.RENDER_PROD_DEPLOY_HOOK }}"
+          if [ -n "${{ secrets.RENDER_PROD_DEPLOY_HOOK }}" ]; then
+            curl -X POST "${{ secrets.RENDER_PROD_DEPLOY_HOOK }}"
+          else
+            echo "RENDER_PROD_DEPLOY_HOOK secret is not set yet. Skipping Render trigger."
+          fi
