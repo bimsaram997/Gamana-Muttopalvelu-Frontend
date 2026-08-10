@@ -1,0 +1,80 @@
+<header class="sticky-top shadow-sm z-3">
+  
+  <!-- Dark Burgundy Top Contact Bar -->
+  <div class="top-bar text-white py-2 fs-7 d-none d-md-block">
+    <div class="container d-flex justify-content-between align-items-center">
+      
+      <!-- Phone & Location -->
+      <div class="d-flex align-items-center gap-4 fs-7">
+        <a href="tel:+358414714856" class="text-white text-decoration-none d-flex align-items-center gap-2 hover-opacity">
+          <mat-icon class="text-gamana-red fs-6">phone</mat-icon>
+          <span class="fw-bold">+358 41 471 4856</span>
+        </a>
+        <span class="text-white-50">|</span>
+        <span class="text-white-50 d-flex align-items-center gap-1">
+          <mat-icon class="text-gamana-red fs-6">location_on</mat-icon>
+          The moving experts in Tampere
+        </span>
+      </div>
+
+      <!-- Language & Google Reviews -->
+      <div class="d-flex align-items-center gap-3">
+        <div class="d-flex align-items-center gap-1 bg-white bg-opacity-10 px-3 py-1 rounded-pill fs-7">
+          <span class="text-warning fw-bold">★ 4.6/5</span>
+          <span class="text-white-50">(Google Reviews)</span>
+        </div>
+
+        <button mat-button [matMenuTriggerFor]="langMenu" class="text-white px-2 fw-semibold">
+          <mat-icon class="me-1">language</mat-icon> {{ selectedLanguage }}
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <mat-menu #langMenu="matMenu">
+          <button mat-menu-item (click)="setLanguage('FI')">🇫🇮 Suomi</button>
+          <button mat-menu-item (click)="setLanguage('EN')">🇬🇧 English</button>
+        </mat-menu>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Main Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom py-2">
+    <div class="container">
+      
+      <!-- Brand Logo + Creative Text Styling -->
+      <a class="navbar-brand d-flex align-items-center gap-2 text-decoration-none" routerLink="/">
+        <img src="assets/logo.png" alt="Gamana Logo" height="52" class="d-inline-block">
+        
+        <div class="d-flex flex-column lh-1 ms-1">
+          <span class="brand-title fw-black tracking-wider text-gamana-red">GAMANA</span>
+          <span class="brand-subtitle text-uppercase fw-bold text-dark">MUUTTOPALVELU</span>
+          <span class="brand-tagline text-muted">Your belongings • Our responsibility</span>
+        </div>
+      </a>
+
+      <!-- Mobile Menu Toggle Button -->
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarGamana">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Navigation Links -->
+      <div class="collapse navbar-collapse" id="navbarGamana">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 fw-bold gap-lg-4 text-center">
+          <li class="nav-item"><a class="nav-link text-dark" href="#services">Services</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="#packages">Pricing (25€/h)</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="#cleaning">Cleaning</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" routerLink="/contact">Contact</a></li>
+        </ul>
+
+        <!-- Action Button -->
+        <div class="d-flex justify-content-center pt-2 pt-lg-0">
+          <a mat-flat-button color="warn" href="#calculator" class="rounded-pill px-4 py-2 fw-bold text-white shadow-sm">
+            Book Online &rarr;
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </nav>
+
+</header>
