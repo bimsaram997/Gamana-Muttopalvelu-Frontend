@@ -1,0 +1,52 @@
+/* Dark Burgundy Background matching flyer footer */
+.top-bar {
+  background-color: #300C0E !important;
+}
+
+.text-gamana-red {
+  color: #D2232A !important;
+}
+
+/* Creative Brand Text Styling */
+.brand-title {
+  font-size: 1.65rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  color: #D2232A;
+  line-height: 0.9;
+}
+
+.brand-subtitle {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #300C0E;
+  margin-top: 3px;
+}
+
+.brand-tagline {
+  font-size: 0.58rem;
+  font-weight: 600;
+  color: #777777;
+  letter-spacing: 0.2px;
+}
+
+.fs-7 {
+  font-size: 0.82rem;
+}
+
+/* Nav Link Styling */
+.nav-link {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: #D2232A !important;
+}
+
+/* Material Icons Vertical Alignment */
+mat-icon {
+  vertical-align: middle;
+}
