@@ -2,7 +2,10 @@ import { Component } from '@angular/core';
 import { HeroSectionComponent } from '../../sections/hero-section/hero-section.component';
 import { HowItWorksComponent } from '../../sections/how-it-works/how-it-works.component';
 import { ServiceSectionComponent } from '../../sections/service-section/service-section.component';
+<<<<<<< Updated upstream
 import { PricingPackagesComponent } from '../../sections/pricing-packages/pricing-packages.component';
+=======
+>>>>>>> Stashed changes
 
 @Component({
   selector: 'app-landing-page',
