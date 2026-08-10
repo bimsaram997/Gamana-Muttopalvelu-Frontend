@@ -1,0 +1,72 @@
+<section class="hero-section position-relative d-flex align-items-center py-5">
+    <!-- Dark Background Overlay -->
+    <div class="hero-overlay"></div>
+
+    <div class="container position-relative z-2 py-lg-5">
+        <div class="row align-items-center">
+
+            <!-- Left Column: Revised Copy, Services Checklist, and Actions -->
+            <div class="col-lg-7 text-white">
+
+                <!-- Top Small Tagline -->
+                <span class="text-uppercase fw-bold text-gamana-red tracking-widest fs-8 d-block mb-2">
+                    BOOK ONLINE 24/7 • YOUR BELONGINGS, OUR RESPONSIBILITY
+                </span>
+
+                <!-- Main Headline -->
+                <h1 class="display-3 fw-black text-white mb-3 tracking-tight">
+                    The moving experts in <span class="text-gamana-red">Tampere</span>
+                </h1>
+
+                <!-- Revised Description Copy -->
+                <p class="lead fw-medium text-white-80 mb-4">
+                    Professional moving service starting at just <strong>25€ per hour</strong>. Fast, reliable, and
+                    stress-free handling for your home or business.
+                </p>
+
+                <!-- Key Services Checkbox Grid -->
+                <div
+                    class="services-card bg-gamana-burgundy text-white p-4 rounded-4 shadow-sm mb-4 border border-secondary border-opacity-25">
+                    <h5 class="fw-bold text-uppercase text-gamana-red mb-3 d-flex align-items-center gap-2">
+                        <mat-icon>local_shipping</mat-icon> Our Services
+                    </h5>
+
+                    <div class="row g-3 fw-semibold fs-7">
+                        <div *ngFor="let service of keyServices" class="col-sm-6 d-flex align-items-center gap-2">
+                            <mat-icon class="text-gamana-red">check_box</mat-icon>
+                            <span>{{ service }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <!-- Action Buttons -->
+<div class="d-flex flex-wrap align-items-center gap-3 pt-2">
+  <!-- Primary Book Now Button -->
+  <a 
+    routerLink="/booking" 
+    class="btn btn-gamana-red rounded-pill px-4 py-3 fw-bold fs-6 shadow text-decoration-none">
+    Book now &rarr;
+  </a>
+
+  <!-- Request an Offer Button -->
+  <a 
+    href="tel:+358414714856" 
+    class="btn btn-outline-light rounded-pill px-4 py-3 fw-bold fs-6 shadow-sm text-decoration-none">
+    Request an offer
+  </a>
+
+  <!-- WhatsApp Quick Contact -->
+  <a 
+    href="https://wa.me/358414714856" 
+    target="_blank" 
+    class="btn btn-success rounded-pill px-3 py-3 fw-bold d-flex align-items-center gap-2 text-decoration-none shadow-sm ms-lg-2">
+    <i class="bi bi-whatsapp fs-5"></i>
+  </a>
+</div>
+
+            </div>
+
+        </div>
+    </div>
+</section>
