@@ -1,0 +1,67 @@
+<section id="services" class="services-section py-5 bg-white">
+  <div class="container py-lg-4">
+    
+    <!-- Section Header -->
+    <div class="row justify-content-center text-center mb-5">
+      <div class="col-lg-8">
+        <span class="badge bg-danger bg-opacity-10 text-gamana-red fw-bold px-3 py-2 rounded-pill fs-7 mb-2">
+          WHAT WE DO
+        </span>
+        <h2 class="display-6 fw-black text-dark mb-3">
+          Our Moving & Transport <span class="text-gamana-red">Services</span>
+        </h2>
+        <p class="lead text-muted fs-6">
+          Tailored moving, transport, and cleaning solutions designed to make your move completely hassle-free.
+        </p>
+      </div>
+    </div>
+
+    <!-- Services Grid -->
+    <div class="row g-4">
+      <div *ngFor="let service of services" class="col-12 col-md-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm rounded-4 p-4 hover-card bg-light position-relative">
+          
+          <!-- Icon Header -->
+          <div class="service-icon-wrapper bg-gamana-burgundy text-white rounded-3 mb-3 d-inline-flex align-items-center justify-content-center shadow-sm">
+            <mat-icon class="fs-3">{{ service.icon }}</mat-icon>
+          </div>
+
+          <small class="text-uppercase fw-bold text-gamana-red fs-8 mb-1 d-block tracking-wider">
+            {{ service.subtitle }}
+          </small>
+          
+          <h3 class="fw-bold text-dark fs-5 mb-2">{{ service.title }}</h3>
+          
+          <p class="text-muted fs-7 mb-4 flex-grow-1">
+            {{ service.description }}
+          </p>
+
+          <!-- Checkmark Highlights -->
+          <div class="border-top pt-3">
+            <ul class="list-unstyled mb-0 fs-7 d-flex flex-column gap-2">
+              <li *ngFor="let item of service.highlights" class="d-flex align-items-center gap-2 text-dark fw-semibold">
+                <mat-icon class="text-gamana-red fs-6">check_circle</mat-icon>
+                <span>{{ item }}</span>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Action Callout -->
+    <div class="mt-5 text-center">
+      <p class="fw-bold text-muted mb-3 fs-7">Need a custom transport arrangement?</p>
+      <div class="d-flex justify-content-center gap-3">
+        <a routerLink="/booking" class="btn btn-gamana-red rounded-pill px-4 py-3 fw-bold fs-6 shadow-sm text-decoration-none">
+          Get Instant Price &rarr;
+        </a>
+        <a href="tel:+358414714856" class="btn btn-outline-dark rounded-pill px-4 py-3 fw-bold fs-6 text-decoration-none">
+          <mat-icon class="me-1">phone</mat-icon> +358 41 471 4856
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
