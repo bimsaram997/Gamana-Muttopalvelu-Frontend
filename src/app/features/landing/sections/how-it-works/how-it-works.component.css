@@ -1,0 +1,60 @@
+:host {
+  display: block;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.how-it-works-section {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #F8F9FA !important;
+}
+
+.bg-gamana-burgundy {
+  background-color: #300C0E !important;
+}
+
+.text-gamana-red {
+  color: #D2232A !important;
+}
+
+.btn-gamana-red {
+  background-color: #D2232A !important;
+  color: #FFFFFF !important;
+  transition: all 0.2s ease;
+}
+
+.btn-gamana-red:hover {
+  background-color: #B0181E !important;
+  color: #FFFFFF !important;
+}
+
+.fw-black {
+  font-weight: 900 !important;
+}
+
+.fs-7 {
+  font-size: 0.875rem;
+}
+
+.icon-wrapper {
+  width: 64px;
+  height: 64px;
+}
+
+.step-number {
+  line-height: 1;
+}
+
+.hover-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hover-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(48, 12, 14, 0.1) !important;
+}
+
+mat-icon {
+  vertical-align: middle;
+}
