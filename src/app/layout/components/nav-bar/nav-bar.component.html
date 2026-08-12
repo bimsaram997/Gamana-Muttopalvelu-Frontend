@@ -61,14 +61,14 @@
       <div class="collapse navbar-collapse" id="navbarGamana">
         <ul class="navbar-nav mx-auto mb-2 mb-lg-0 fw-bold gap-lg-4 text-center">
           <li class="nav-item"><a class="nav-link text-dark" href="#services">Services</a></li>
-          <li class="nav-item"><a class="nav-link text-dark" href="#packages">Pricing (25€/h)</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="#packages">Pricing </a></li>
           <li class="nav-item"><a class="nav-link text-dark" href="#cleaning">Cleaning</a></li>
           <li class="nav-item"><a class="nav-link text-dark" routerLink="/contact">Contact</a></li>
         </ul>
 
         <!-- Action Button -->
         <div class="d-flex justify-content-center pt-2 pt-lg-0">
-          <a mat-flat-button color="warn" href="#calculator" class="rounded-pill px-4 py-2 fw-bold text-white shadow-sm">
+          <a mat-flat-button color="warn" (click)="goToBooking()" class="rounded-pill px-4 py-2 fw-bold text-white shadow-sm">
             Book Online &rarr;
           </a>
         </div>

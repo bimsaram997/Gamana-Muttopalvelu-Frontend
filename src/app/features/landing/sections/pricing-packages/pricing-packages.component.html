@@ -47,7 +47,7 @@
 
           <!-- CTA Button -->
           <a 
-            routerLink="/booking" 
+            (click)="selectPackageAndBook(pkg.id)"
             class="btn rounded-pill w-100 py-3 fw-bold fs-6 shadow-sm text-decoration-none mt-auto"
             [ngClass]="pkg.popular ? 'btn-gamana-red' : 'btn-outline-dark'">
             Book This Package &rarr;

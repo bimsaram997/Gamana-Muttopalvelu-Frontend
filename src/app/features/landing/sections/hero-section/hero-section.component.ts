@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { MATERIAL_COMPONENTS } from '../../../../utills/material-imports';
+import { Router } from '@angular/router';
+import { MatStepperModule } from '@angular/material/stepper';
 
 @Component({
   selector: 'app-hero-section',
@@ -9,6 +11,8 @@ import { MATERIAL_COMPONENTS } from '../../../../utills/material-imports';
   styleUrl: './hero-section.component.css'
 })
 export class HeroSectionComponent {
+
+  constructor(private router: Router) {}
 keyServices = [
     'Apartment moving',
     'IKEA / JYSK / Masku / Asko pickups',
@@ -16,4 +20,8 @@ keyServices = [
     'Furniture delivery',
     "Final cleaning"
   ];
+
+  goToBooking(): void {
+    this.router.navigate(['/booking']);
+  }
 }

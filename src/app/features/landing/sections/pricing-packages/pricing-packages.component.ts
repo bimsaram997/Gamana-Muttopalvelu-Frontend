@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MATERIAL_COMPONENTS } from '../../../../utills/material-imports';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-pricing-packages',
@@ -9,8 +10,11 @@ import { MATERIAL_COMPONENTS } from '../../../../utills/material-imports';
   styleUrl: './pricing-packages.component.css'
 })
 export class PricingPackagesComponent {
+
+  constructor(private router: Router) {}
 packages: any[] = [
     {
+      id: 1,
       title: 'Van Only',
       price: '25€',
       unit: 'per hour',
@@ -23,7 +27,8 @@ packages: any[] = [
       ]
     },
     {
-      title: 'Van + 1 Mover',
+      id: 2,
+      title: 'Van + 1 Helper',
       price: '45€',
       unit: 'per hour',
       popular: true,
@@ -37,17 +42,24 @@ packages: any[] = [
       ]
     },
     {
-      title: 'Van + 2 Movers',
+      id: 3,
+      title: 'Van + 2 Helpers',
       price: '65€',
       unit: 'per hour',
       description: 'Fastest option for larger homes, heavy items, and multi-floor moves.',
       features: [
         'Spacious Moving Van',
-        '2 Full-Time Movers',
+        '2 Full-Time Helpers',
         'Complete Heavy Lifting',
         'Maximum Protection & Care',
         'Fast Load & Unload Time'
       ]
     }
   ];
+
+  selectPackageAndBook(packageId: number): void {
+    this.router.navigate(['/booking'], {
+      queryParams: { packageId: packageId }
+    });
+  }
 }
