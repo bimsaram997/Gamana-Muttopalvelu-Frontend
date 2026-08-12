@@ -10,6 +10,11 @@ export const routes: Routes = [
       {
         path: '',
         component: LandingPageComponent
+      },
+      {
+        path: 'booking',
+        loadComponent: () => 
+          import('./features/bookings/booking-wizard/booking-wizard.component').then(m => m.BookingWizardComponent)
       }
     ]
   },

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MATERIAL_COMPONENTS } from '../../../utills/material-imports';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-nav-bar',
@@ -11,7 +12,13 @@ import { MATERIAL_COMPONENTS } from '../../../utills/material-imports';
 export class NavBarComponent {
   selectedLanguage: string = 'FI';
   imagePath: string = 'assets/test.jpg';
+
+constructor(private router: Router) {}
   setLanguage(lang: string): void {
     this.selectedLanguage = lang;
+  }
+
+   goToBooking(): void {
+    this.router.navigate(['/booking']);
   }
 }
