@@ -1,0 +1,272 @@
+<div class="booking-page bg-light py-5 min-vh-100">
+  <div class="container py-lg-3">
+    
+    <!-- Header -->
+    <div class="text-center mb-5">
+      <span class="badge bg-danger bg-opacity-10 text-gamana-red fw-bold px-3 py-2 rounded-pill fs-7 mb-2">
+        FAST & EASY BOOKING
+      </span>
+      <h1 class="display-6 fw-black text-dark mb-2">Book Your Move with <span class="text-gamana-red">Gamana</span></h1>
+      <p class="text-muted fs-6">Transparent hourly rates • Professional service in Tampere & Finland</p>
+    </div>
+
+    <!-- Booking Confirmation View -->
+    <div *ngIf="isSubmitted" class="row justify-content-center">
+      <div class="col-lg-6 text-center bg-white p-5 rounded-4 shadow-sm">
+        <mat-icon class="text-success display-1 mb-3">check_circle</mat-icon>
+        <h2 class="fw-bold mb-2">Booking Request Received!</h2>
+        <p class="text-muted mb-4 fs-6">
+          Thank you, <strong>{{ scheduleForm.value.fullName }}</strong>. We have received your booking details for 
+          <strong>{{ scheduleForm.value.moveDate | date:'fullDate' }}</strong> at <strong>{{ scheduleForm.value.moveTime }}</strong>.
+        </p>
+        <div class="p-3 bg-light rounded-3 mb-4 text-start fs-7">
+          <div class="d-flex justify-content-between mb-1">
+            <span class="text-muted">Package:</span>
+            <span class="fw-bold text-dark">{{ selectedPkg.title }}</span>
+          </div>
+          <div class="d-flex justify-content-between mb-1">
+            <span class="text-muted">Pickups:</span>
+            <span class="fw-bold text-dark">{{ pickupLocations.length }} Location(s)</span>
+          </div>
+          <div class="d-flex justify-content-between pt-2 border-top">
+            <span class="fw-bold text-dark">Estimated Total:</span>
+            <span class="fw-bold text-gamana-red fs-6">{{ calculatedTotal }}€</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stepper Form -->
+    <div *ngIf="!isSubmitted" class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="bg-white rounded-4 shadow-sm p-4 p-md-5">
+          
+          <!-- ROOT STEPPER CONTAINER -->
+          <mat-stepper #stepper [linear]="true">
+            
+            <!-- STEP 1: Service Package -->
+            <mat-step [stepControl]="serviceForm" label="Service">
+              <form [formGroup]="serviceForm" class="py-3">
+                <h4 class="fw-bold text-dark mb-4 fs-5">1. Select Package & Hours</h4>
+
+                <div class="row g-3 mb-4">
+                  <div *ngFor="let pkg of packages" class="col-12 col-md-4">
+                    <label class="card h-100 p-3 border-2 rounded-4 cursor-pointer text-center option-card position-relative"
+                      [class.border-gamana-red]="serviceForm.get('selectedPackageId')?.value === pkg.id">
+                      
+                      <input type="radio" formControlName="selectedPackageId" [value]="pkg.id" class="d-none">
+                      
+                      <span *ngIf="pkg.popular" class="badge bg-danger position-absolute top-0 start-50 translate-middle-x rounded-pill mt-n2 px-3 py-1 fs-8">
+                        MOST POPULAR
+                      </span>
+
+                      <h5 class="fw-bold text-dark fs-6 mb-1 mt-2">{{ pkg.title }}</h5>
+                      <span class="fs-4 fw-black text-gamana-red mb-1 d-block">{{ pkg.price }} <small class="fs-8 text-muted fw-normal">/ {{ pkg.unit }}</small></span>
+                      <p class="text-muted fs-8 mb-3">{{ pkg.description }}</p>
+
+                      <ul class="list-unstyled text-start fs-8 border-top pt-2 mt-auto mb-0 text-muted">
+                        <li *ngFor="let feat of pkg.features" class="d-flex align-items-center mb-1">
+                          <mat-icon class="text-success fs-6 me-1">check_circle</mat-icon> {{ feat }}
+                        </li>
+                      </ul>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="row align-items-center mb-4 bg-light p-3 rounded-3 g-3">
+                  <div class="col-md-6">
+                    <label class="fw-bold text-dark fs-7 d-block mb-1">Estimated Hours Needed</label>
+                    <small class="text-muted fs-8">Minimum 1 hour. Billing is calculated on actual time.</small>
+                  </div>
+                  <div class="col-md-6 d-flex justify-content-md-end align-items-center gap-2">
+                    <button type="button" class="btn btn-outline-dark rounded-circle" 
+                      (click)="serviceForm.patchValue({ estimatedHours: serviceForm.value.estimatedHours > 1 ? serviceForm.value.estimatedHours - 1 : 1 })">-</button>
+                    <span class="fw-black fs-5 px-3">{{ serviceForm.value.estimatedHours }} hrs</span>
+                    <button type="button" class="btn btn-outline-dark rounded-circle" 
+                      (click)="serviceForm.patchValue({ estimatedHours: serviceForm.value.estimatedHours + 1 })">+</button>
+                  </div>
+                </div>
+
+                <div class="p-3 bg-light rounded-3 mb-4">
+                  <mat-checkbox formControlName="includeCleaning" color="primary">
+                    <span class="fw-bold text-dark fs-7">Add Move-Out Cleaning (Muuttosiivous)</span>
+                    <span class="badge bg-success ms-2">+110€</span>
+                  </mat-checkbox>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4">
+                  <button mat-button matStepperNext type="button" class="btn btn-gamana-red text-white px-4 py-2 rounded-pill fw-bold">
+                    Next: Addresses &rarr;
+                  </button>
+                </div>
+              </form>
+            </mat-step>
+
+            <!-- STEP 2: Multiple Pickups & Single Delivery -->
+            <mat-step [stepControl]="detailsForm" label="Addresses">
+              <form [formGroup]="detailsForm" class="py-3">
+                <h4 class="fw-bold text-dark mb-4 fs-5">2. Pickup & Delivery Locations</h4>
+
+                <div class="row g-4">
+                  
+                  <!-- MULTIPLE PICKUP LOCATIONS (ARRAY) -->
+                  <div class="col-12 col-lg-6">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                      <h6 class="fw-bold text-gamana-red mb-0 fs-7 text-uppercase">Pickup Address(es)</h6>
+                      <button type="button" (click)="addPickupLocation()" class="btn btn-sm btn-outline-danger rounded-pill fw-bold fs-8">
+                        <mat-icon class="fs-6 me-1">add</mat-icon> Add Pickup
+                      </button>
+                    </div>
+
+                    <div formArrayName="pickupLocations" class="d-flex flex-column gap-3">
+                      <div *ngFor="let group of pickupLocations.controls; let i = index" [formGroupName]="i" class="p-3 border rounded-3 bg-light position-relative">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                          <span class="fw-bold fs-8 text-muted">Pickup Location #{{ i + 1 }}</span>
+                          <button *ngIf="pickupLocations.length > 1" type="button" (click)="removePickupLocation(i)" class="btn btn-link text-danger p-0">
+                            <mat-icon class="fs-6">delete</mat-icon>
+                          </button>
+                        </div>
+
+                        <mat-form-field appearance="outline" class="w-100 mb-2">
+                          <mat-label>Address & City</mat-label>
+                          <input matInput formControlName="address" placeholder="e.g. Hämeenkatu 10, Tampere">
+                          <mat-icon matSuffix>location_on</mat-icon>
+                        </mat-form-field>
+
+                        <div class="row g-2 align-items-center">
+                          <div class="col-6">
+                            <mat-form-field appearance="outline" class="w-100">
+                              <mat-label>Floor</mat-label>
+                              <input matInput type="number" formControlName="floor" min="0">
+                            </mat-form-field>
+                          </div>
+                          <div class="col-6">
+                            <mat-checkbox formControlName="hasElevator" color="primary">Has Elevator</mat-checkbox>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- SINGLE DELIVERY LOCATION -->
+                  <div class="col-12 col-lg-6">
+                    <div class="mb-3">
+                      <h6 class="fw-bold text-gamana-red mb-0 fs-7 text-uppercase">Delivery Address</h6>
+                    </div>
+
+                    <div formGroupName="deliveryLocation" class="p-3 border rounded-3 bg-light">
+                      <mat-form-field appearance="outline" class="w-100 mb-2">
+                        <mat-label>Final Destination Address & City</mat-label>
+                        <input matInput formControlName="address" placeholder="e.g. Opiskelijankatu 4, Tampere">
+                        <mat-icon matSuffix>flag</mat-icon>
+                      </mat-form-field>
+
+                      <div class="row g-2 align-items-center">
+                        <div class="col-6">
+                          <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Floor</mat-label>
+                            <input matInput type="number" formControlName="floor" min="0">
+                          </mat-form-field>
+                        </div>
+                        <div class="col-6">
+                          <mat-checkbox formControlName="hasElevator" color="primary">Has Elevator</mat-checkbox>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Notes -->
+                  <div class="col-12 mt-2">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Additional Notes / Heavy Items</mat-label>
+                      <textarea matInput formControlName="notes" rows="3" placeholder="Sofa dimensions, IKEA pickup order numbers, fragile items..."></textarea>
+                    </mat-form-field>
+                  </div>
+
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                  <button mat-button matStepperPrevious type="button" class="btn btn-outline-dark rounded-pill px-4">Back</button>
+                  <button mat-button matStepperNext type="button" [disabled]="detailsForm.invalid" class="btn btn-gamana-red text-white px-4 py-2 rounded-pill fw-bold">
+                    Next: Date & Contact &rarr;
+                  </button>
+                </div>
+              </form>
+            </mat-step>
+
+            <!-- STEP 3: Contact & Schedule -->
+            <mat-step [stepControl]="scheduleForm" label="Contact">
+              <form [formGroup]="scheduleForm" (ngSubmit)="submitBooking()" class="py-3">
+                <h4 class="fw-bold text-dark mb-4 fs-5">3. Moving Date & Your Information</h4>
+
+                <div class="row g-3">
+                  <div class="col-12 col-md-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Moving Date</mat-label>
+                      <input matInput [matDatepicker]="picker" [min]="minDate" formControlName="moveDate">
+                      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                      <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-12 col-md-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Preferred Start Time</mat-label>
+                      <mat-select formControlName="moveTime">
+                        <mat-option value="08:00">08:00 AM</mat-option>
+                        <mat-option value="10:00">10:00 AM</mat-option>
+                        <mat-option value="12:00">12:00 PM</mat-option>
+                        <mat-option value="14:00">02:00 PM</mat-option>
+                        <mat-option value="16:00">04:00 PM</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-12 col-md-4">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Full Name</mat-label>
+                      <input matInput formControlName="fullName" placeholder="John Doe">
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-12 col-md-4">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Email Address</mat-label>
+                      <input matInput type="email" formControlName="email" placeholder="john@example.com">
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-12 col-md-4">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Phone Number</mat-label>
+                      <input matInput type="tel" formControlName="phone" placeholder="+358 40 123 4567">
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <!-- Summary Bar -->
+                <div class="mt-4 p-3 bg-gamana-burgundy text-white rounded-3 d-flex align-items-center justify-content-between">
+                  <div>
+                    <small class="text-uppercase text-gamana-red fw-bold tracking-wider fs-8">Estimated Total</small>
+                    <h3 class="mb-0 fw-black text-white">{{ calculatedTotal }}€</h3>
+                  </div>
+                  <small class="text-white-80 fs-8">{{ serviceForm.value.estimatedHours }} hours "&#64;" {{ selectedPkg.ratePerHour }}€/h</small>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                  <button mat-button matStepperPrevious type="button" class="btn btn-outline-dark rounded-pill px-4">Back</button>
+                  <button type="submit" [disabled]="scheduleForm.invalid" class="btn btn-gamana-red text-white px-5 py-3 rounded-pill fw-bold shadow-sm fs-6">
+                    Confirm & Submit Booking
+                  </button>
+                </div>
+              </form>
+            </mat-step>
+
+          </mat-stepper>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

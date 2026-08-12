@@ -1,0 +1,68 @@
+:host {
+  display: block;
+  width: 100% !important;
+}
+
+.booking-page {
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Custom Gamana Brand Colors */
+.bg-gamana-burgundy {
+  background-color: var(--gamana-burgundy, #300C0E) !important;
+}
+
+.text-gamana-red {
+  color: var(--gamana-red, #D2232A) !important;
+}
+
+.btn-gamana-red {
+  background-color: var(--gamana-red, #D2232A) !important;
+  color: #FFFFFF !important;
+  transition: all 0.2s ease;
+}
+
+.btn-gamana-red:hover {
+  background-color: var(--gamana-red-hover, #B0181E) !important;
+  color: #FFFFFF !important;
+}
+
+.border-gamana-red {
+  border-color: var(--gamana-red, #D2232A) !important;
+  background-color: rgba(210, 35, 42, 0.03) !important;
+}
+
+/* Font Adjustments */
+.fw-black {
+  font-weight: 900 !important;
+}
+
+.fs-7 {
+  font-size: 0.875rem;
+}
+
+.fs-8 {
+  font-size: 0.725rem;
+}
+
+/* Card Selection Styling */
+.option-card {
+  transition: all 0.2s ease;
+}
+
+.option-card:hover {
+  border-color: var(--gamana-red, #D2232A) !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* Fix spacing for Material Form Fields inside Bootstrap columns */
+mat-form-field {
+  margin-bottom: -0.25rem;
+}
+
+mat-icon {
+  vertical-align: middle;
+}
