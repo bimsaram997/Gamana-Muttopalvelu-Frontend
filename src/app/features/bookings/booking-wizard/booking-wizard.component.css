@@ -66,3 +66,16 @@ mat-form-field {
 mat-icon {
   vertical-align: middle;
 }
+
+.address-select-panel {
+  max-height: 250px !important;
+}
+
+.address-select-panel mat-option {
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.9rem;
+}
+
+.address-select-panel mat-option:last-child {
+  border-bottom: none;
+}
