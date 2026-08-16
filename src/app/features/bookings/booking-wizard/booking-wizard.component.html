@@ -1,319 +1,262 @@
-<div class="booking-page bg-light py-5 min-vh-100">
-  <div class="container py-lg-3">
+<div class="container my-4 booking-page">
+  <mat-stepper #stepper linear="true">
     
-    <!-- Header -->
-    <div class="text-center mb-5">
-      <span class="badge bg-danger bg-opacity-10 text-gamana-red fw-bold px-3 py-2 rounded-pill fs-7 mb-2">
-        FAST & EASY BOOKING
+    <!-- Step 1: Package Selection -->
+    <mat-step [stepControl]="serviceForm">
+      <form [formGroup]="serviceForm">
+        <ng-template matStepLabel>Package</ng-template>
+        <h3 class="fw-black mb-3">Select Your Package</h3>
+        
+        <div class="row g-3">
+          <div class="col-md-4" *ngFor="let pkg of packages">
+            <div 
+              class="card option-card cursor-pointer p-3 h-100"
+              [class.border-gamana-red]="serviceForm.get('selectedPackageId')?.value === pkg.id"
+              (click)="serviceForm.patchValue({ selectedPackageId: pkg.id })">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="fw-bold mb-0">{{ pkg.title }}</h5>
+                <span class="badge bg-danger" *ngIf="pkg.popular">Popular</span>
+              </div>
+              <p class="text-muted fs-7">{{ pkg.description }}</p>
+              <h4 class="text-gamana-red fw-bold">{{ pkg.price }} <small class="fs-8 text-muted">/ {{ pkg.unit }}</small></h4>
+              <ul class="list-unstyled fs-7 mt-2">
+                <li *ngFor="let feat of pkg.features"><mat-icon class="text-success fs-6">check</mat-icon> {{ feat }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-4">
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Estimated Duration (Hours)</mat-label>
+              <input matInput type="number" formControlName="estimatedHours" min="1">
+            </mat-form-field>
+          </div>
+          <div class="col-md-6 d-flex align-items-center">
+            <mat-checkbox formControlName="includeCleaning">Include Cleaning (+110€)</mat-checkbox>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end mt-3">
+          <button mat-raised-button class="btn-gamana-red" matStepperNext>Next: Address Details</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 2: Addresses -->
+    <mat-step [stepControl]="detailsForm">
+      <form [formGroup]="detailsForm">
+        <ng-template matStepLabel>Addresses</ng-template>
+
+        <div class="row g-4 mt-1 justify-content-center">
+          <div class="col-lg-8">
+            <div formArrayName="pickupLocations">
+              <div *ngFor="let pickup of pickupLocations.controls; let i = index" [formGroupName]="i" class="card p-3 mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <strong class="text-dark">Pickup Location #{{ i + 1 }}</strong>
+                  <button mat-icon-button color="warn" type="button" *ngIf="pickupLocations.length > 1" (click)="removePickupLocation(i)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Search Pickup Address</mat-label>
+                  <input matInput formControlName="searchQuery" [matAutocomplete]="autoPickup">
+                  <button mat-icon-button matSuffix type="button" (click)="clearAddress(pickup, i)" *ngIf="pickup.get('searchQuery')?.value">
+                    <mat-icon>clear</mat-icon>
+                  </button>
+                  <mat-autocomplete #autoPickup="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onAddressSelected($event, pickup)">
+                    <mat-option *ngFor="let suggestion of pickupSuggestions[i]" [value]="suggestion">
+                      {{ getLabel(suggestion) }}
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+
+                <div class="row g-2">
+                  <div class="col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Floor</mat-label>
+                      <input matInput type="number" formControlName="floor" min="0">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-6 d-flex align-items-center">
+                    <mat-checkbox formControlName="hasElevator">Elevator Available</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button mat-stroked-button type="button" class="mb-4" (click)="addPickupLocation()">
+              <mat-icon>add</mat-icon> Add Another Pickup
+            </button>
+
+            <div formGroupName="deliveryLocation" class="card p-3 mb-3 border-danger">
+              <strong class="text-dark mb-2">Delivery Location</strong>
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Search Delivery Address</mat-label>
+                <input matInput formControlName="searchQuery" [matAutocomplete]="autoDelivery">
+                <button mat-icon-button matSuffix type="button" (click)="clearAddress(detailsForm.get('deliveryLocation'))" *ngIf="detailsForm.get('deliveryLocation.searchQuery')?.value">
+                  <mat-icon>clear</mat-icon>
+                </button>
+                <mat-autocomplete #autoDelivery="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onAddressSelected($event, detailsForm.get('deliveryLocation'))">
+                  <mat-option *ngFor="let suggestion of deliverySuggestions" [value]="suggestion">
+                    {{ getLabel(suggestion) }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+
+              <div class="row g-2">
+                <div class="col-6">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Floor</mat-label>
+                    <input matInput type="number" formControlName="floor" min="0">
+                  </mat-form-field>
+                </div>
+                <div class="col-6 d-flex align-items-center">
+                  <mat-checkbox formControlName="hasElevator">Elevator Available</mat-checkbox>
+                </div>
+              </div>
+            </div>
+
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Special Notes</mat-label>
+              <textarea matInput formControlName="notes" rows="3"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+          <button mat-button matStepperPrevious>Back</button>
+          <button mat-raised-button class="btn-gamana-red" matStepperNext>Next: Schedule & Contact</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 3: Schedule & Confirmation -->
+    <mat-step [stepControl]="scheduleForm">
+      <form [formGroup]="scheduleForm" (ngSubmit)="submitBooking($event)">
+        <ng-template matStepLabel>Schedule</ng-template>
+
+        <div class="row g-3 mt-1" *ngIf="!isSubmitted">
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Moving Date</mat-label>
+              <input matInput [matDatepicker]="picker" [min]="minDate" formControlName="moveDate">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Start Time</mat-label>
+              <input matInput type="time" formControlName="moveTime">
+            </mat-form-field>
+          </div>
+          <div class="col-md-12">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Full Name</mat-label>
+              <input matInput formControlName="fullName">
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Email Address</mat-label>
+              <input matInput type="email" formControlName="email">
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Phone Number</mat-label>
+              <input matInput formControlName="phone">
+            </mat-form-field>
+          </div>
+
+          <div class="card p-3 my-3 bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+              <span><strong>Total Price:</strong></span>
+              <h3 class="text-gamana-red fw-bold mb-0">{{ calculatedTotal }}€</h3>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between mt-4">
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-raised-button class="btn-gamana-red" type="submit" [disabled]="isLoading">
+              {{ isLoading ? 'Submitting...' : 'Confirm Booking' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Confirmation Card with MapLibre GL Canvas -->
+        <div class="card border-success p-4 my-3" *ngIf="isSubmitted && bookingResponse">
+          <div class="d-flex align-items-center mb-3">
+            <mat-icon class="text-success me-2 fs-2">check_circle</mat-icon>
+            <h4 class="mb-0 text-success fw-bold">Booking Confirmed!</h4>
+          </div>
+
+          <p>Booking ID: <strong>{{ bookingResponse.bookingId }}</strong></p>
+          <p>Customer: <strong>{{ bookingResponse.fullName }}</strong> ({{ bookingResponse.email }})</p>
+          <p>Status: <span class="badge bg-success">{{ bookingResponse.status }}</span></p>
+
+          <!-- Route Metrics -->
+          <div class="card bg-dark text-white p-3 mt-3 shadow-sm" *ngIf="bookingResponse.routeResultDto">
+            <h6 class="text-uppercase text-light fs-8 mb-3">Optimized Route Calculations</h6>
+            <div class="d-flex justify-content-around text-center">
+              <div>
+                <small class="text-light fs-8">Total Distance</small>
+                <h4 class="mb-0 fw-bold text-danger">{{ bookingResponse.routeResultDto.totalDistanceKm }} km</h4>
+              </div>
+              <div class="border-end border-secondary"></div>
+              <div>
+                <small class="text-light fs-8">Est. Driving Time</small>
+                <h4 class="mb-0 fw-bold text-danger">{{ bookingResponse.routeResultDto.totalDurationMinutes }} mins</h4>
+              </div>
+            </div>
+
+            <hr class="border-secondary my-2">
+
+  <!-- Optimal Path Sequence -->
+  <div *ngIf="bookingResponse.routeResultDto.optimizedWaypoints?.length">
+    <small class="text-light fs-8 d-block mb-2 text-uppercase">Optimal Path</small>
+    <div class="d-flex align-items-center flex-wrap gap-2 fs-7">
+      <ng-container *ngFor="let wp of bookingResponse.routeResultDto.optimizedWaypoints; let i = index; let isLast = last">
+        
+        <!-- Office (Start) -->
+        <span *ngIf="i === 0" class="badge bg-success d-inline-flex align-items-center gap-1">
+          🏢 Office
+        </span>
+
+        <!-- Delivery Point (End) -->
+        <span *ngIf="isLast" class="badge bg-danger d-inline-flex align-items-center gap-1">
+          🏁 Delivery Point
+        </span>
+
+        <!-- Pickup Points (Numbered) -->
+        <span *ngIf="i > 0 && !isLast" class="badge bg-primary d-inline-flex align-items-center gap-1">
+          📍 Pickup #{{ i }}
+        </span>
+
+        <span class="text-light text-truncate" [title]="wp.address || wp.label || wp.street">
+        {{ wp.address || wp.label || (wp.street ? (wp.street + ' ' + (wp.houseNumber || '')) : 'Address N/A') }}
       </span>
-      <h1 class="display-6 fw-black text-dark mb-2">Book Your Move with <span class="text-gamana-red">Gamana</span></h1>
-      <p class="text-muted fs-6">Transparent hourly rates • Professional service in Tampere & Finland</p>
+
+        <!-- Arrow Separator -->
+        <mat-icon *ngIf="!isLast" class="text-secondary fs-6 d-flex align-items-center">arrow_forward</mat-icon>
+
+      </ng-container>
     </div>
-
-    <!-- Booking Confirmation View -->
-    <div *ngIf="isSubmitted" class="row justify-content-center">
-      <div class="col-lg-6 text-center bg-white p-5 rounded-4 shadow-sm">
-        <mat-icon class="text-success display-1 mb-3">check_circle</mat-icon>
-        <h2 class="fw-bold mb-2">Booking Request Received!</h2>
-        <p class="text-muted mb-4 fs-6">
-          Thank you, <strong>{{ scheduleForm.value.fullName }}</strong>. We have received your booking details for 
-          <strong>{{ scheduleForm.value.moveDate | date:'fullDate' }}</strong> at <strong>{{ scheduleForm.value.moveTime }}</strong>.
-        </p>
-        <div class="p-3 bg-light rounded-3 mb-4 text-start fs-7">
-          <div class="d-flex justify-content-between mb-1">
-            <span class="text-muted">Package:</span>
-            <span class="fw-bold text-dark">{{ selectedPkg?.title }}</span>
-          </div>
-          <div class="d-flex justify-content-between mb-1">
-            <span class="text-muted">Pickups:</span>
-            <span class="fw-bold text-dark">{{ pickupLocations.length }} Location(s)</span>
-          </div>
-          <div class="d-flex justify-content-between pt-2 border-top">
-            <span class="fw-bold text-dark">Estimated Total:</span>
-            <span class="fw-bold text-gamana-red fs-6">{{ calculatedTotal }}€</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Stepper Form -->
-    <div *ngIf="!isSubmitted" class="row justify-content-center">
-      <div class="col-lg-10">
-        <div class="bg-white rounded-4 shadow-sm p-4 p-md-5">
-          
-          <mat-stepper #stepper [linear]="true">
-            
-            <!-- STEP 1: Service Package -->
-            <mat-step [stepControl]="serviceForm" label="Service">
-              <form [formGroup]="serviceForm" class="py-3">
-                <h4 class="fw-bold text-dark mb-4 fs-5">1. Select Package & Hours</h4>
-
-                <div class="row g-3 mb-4">
-                  <div *ngFor="let pkg of packages" class="col-12 col-md-4">
-                    <label class="card h-100 p-3 border-2 rounded-4 cursor-pointer text-center option-card position-relative"
-                      [class.border-gamana-red]="serviceForm.get('selectedPackageId')?.value === pkg.id">
-                      
-                      <input type="radio" formControlName="selectedPackageId" [value]="pkg.id" class="d-none">
-                      
-                      <span *ngIf="pkg.popular" class="badge bg-danger position-absolute top-0 start-50 translate-middle-x rounded-pill mt-n2 px-3 py-1 fs-8">
-                        MOST POPULAR
-                      </span>
-
-                      <h5 class="fw-bold text-dark fs-6 mb-1 mt-2">{{ pkg.title }}</h5>
-                      <span class="fs-4 fw-black text-gamana-red mb-1 d-block">{{ pkg.price }} <small class="fs-8 text-muted fw-normal">/ {{ pkg.unit }}</small></span>
-                      <p class="text-muted fs-8 mb-3">{{ pkg.description }}</p>
-
-                      <ul class="list-unstyled text-start fs-8 border-top pt-2 mt-auto mb-0 text-muted">
-                        <li *ngFor="let feat of pkg.features" class="d-flex align-items-center mb-1">
-                          <mat-icon class="text-success fs-6 me-1">check_circle</mat-icon> {{ feat }}
-                        </li>
-                      </ul>
-                    </label>
-                  </div>
-                </div>
-
-                <div class="row align-items-center mb-4 bg-light p-3 rounded-3 g-3">
-                  <div class="col-md-6">
-                    <label class="fw-bold text-dark fs-7 d-block mb-1">Estimated Hours Needed</label>
-                    <small class="text-muted fs-8">Minimum 1 hour. Billing is calculated on actual time.</small>
-                  </div>
-                  <div class="col-md-6 d-flex justify-content-md-end align-items-center gap-2">
-                    <button type="button" class="btn btn-outline-dark rounded-circle" 
-                      (click)="serviceForm.patchValue({ estimatedHours: serviceForm.value.estimatedHours > 1 ? serviceForm.value.estimatedHours - 1 : 1 })">-</button>
-                    <span class="fw-black fs-5 px-3">{{ serviceForm.value.estimatedHours }} hrs</span>
-                    <button type="button" class="btn btn-outline-dark rounded-circle" 
-                      (click)="serviceForm.patchValue({ estimatedHours: serviceForm.value.estimatedHours + 1 })">+</button>
-                  </div>
-                </div>
-
-                <div class="p-3 bg-light rounded-3 mb-4">
-                  <mat-checkbox formControlName="includeCleaning" color="primary">
-                    <span class="fw-bold text-dark fs-7">Add Move-Out Cleaning (Muuttosiivous)</span>
-                    <span class="badge bg-success ms-2">+110€</span>
-                  </mat-checkbox>
-                </div>
-
-                <div class="d-flex justify-content-end mt-4">
-                  <button type="button" (click)="stepper.next()" [disabled]="serviceForm.invalid" class="btn btn-gamana-red text-white px-4 py-2 rounded-pill fw-bold">
-                    Next: Addresses &rarr;
-                  </button>
-                </div>
-              </form>
-            </mat-step>
-
-            <!-- STEP 2: Addresses -->
-            <mat-step [stepControl]="detailsForm" label="Addresses">
-              <form [formGroup]="detailsForm" class="py-3">
-                <h4 class="fw-bold text-dark mb-4 fs-5">2. Pickup & Delivery Locations</h4>
-
-                <div class="row g-4">
-                  <!-- MULTIPLE PICKUP LOCATIONS -->
-                  <div class="col-12 col-lg-6">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                      <h6 class="fw-bold text-gamana-red mb-0 fs-7 text-uppercase">Pickup Address(es)</h6>
-                      <button type="button" (click)="addPickupLocation()" class="btn btn-sm btn-outline-danger rounded-pill fw-bold fs-8">
-                        <mat-icon class="fs-6 me-1">add</mat-icon> Add Pickup
-                      </button>
-                    </div>
-
-                    <div formArrayName="pickupLocations" class="d-flex flex-column gap-3">
-                      <div *ngFor="let group of pickupLocations.controls; let i = index" [formGroupName]="i" class="p-3 border rounded-3 bg-light position-relative">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                          <span class="fw-bold fs-8 text-muted">Pickup Location #{{ i + 1 }}</span>
-                          <button *ngIf="pickupLocations.length > 1" type="button" (click)="removePickupLocation(i)" class="btn btn-link text-danger p-0">
-                            <mat-icon class="fs-6">delete</mat-icon>
-                          </button>
-                        </div>
-
-                        <mat-form-field appearance="outline" class="w-100 mb-2">
-                          <mat-label>Address & City</mat-label>
-                          <input matInput 
-                            formControlName="searchQuery" 
-                            [matAutocomplete]="autoPickup"
-                            placeholder="Type Finnish address (e.g. Hämeenkatu 10, Tampere)">
-                          
-                          <mat-icon matPrefix class="me-2 text-muted">location_on</mat-icon>
-
-                          <button *ngIf="group.get('searchQuery')?.value" 
-                            matSuffix 
-                            mat-icon-button 
-                            type="button" 
-                            aria-label="Clear address"
-                            (click)="clearAddress(group, i)">
-                            <mat-icon>close</mat-icon>
-                          </button>
-
-                          <mat-autocomplete #autoPickup="matAutocomplete" 
-                            [displayWith]="displayFn"
-                            (optionSelected)="onAddressSelected($event, group)">
-                            <mat-option *ngFor="let feature of pickupSuggestions[i]" [value]="feature">
-                              <div class="d-flex align-items-center py-1">
-                                <mat-icon class="me-2 text-secondary fs-6">place</mat-icon>
-                                <span class="fs-7 text-dark">{{ getLabel(feature) }}</span>
-                              </div>
-                            </mat-option>
-                          </mat-autocomplete>
-                        </mat-form-field>
-
-                        <div class="row g-2 align-items-center">
-                          <div class="col-6">
-                            <mat-form-field appearance="outline" class="w-100">
-                              <mat-label>Floor</mat-label>
-                              <input matInput type="number" formControlName="floor" min="0">
-                            </mat-form-field>
-                          </div>
-                          <div class="col-6">
-                            <mat-checkbox formControlName="hasElevator" color="primary">Has Elevator</mat-checkbox>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- SINGLE DELIVERY LOCATION -->
-                  <div class="col-12 col-lg-6">
-                    <div class="mb-3">
-                      <h6 class="fw-bold text-gamana-red mb-0 fs-7 text-uppercase">Delivery Address</h6>
-                    </div>
-
-                    <div formGroupName="deliveryLocation" class="p-3 border rounded-3 bg-light">
-                      <mat-form-field appearance="outline" class="w-100 mb-2">
-                        <mat-label>Final Destination Address & City</mat-label>
-                        <input matInput 
-                          formControlName="searchQuery" 
-                          [matAutocomplete]="autoDelivery"
-                          placeholder="Type Finnish address (e.g. Opiskelijankatu 4, Tampere)">
-                        
-                        <mat-icon matPrefix class="me-2 text-muted">flag</mat-icon>
-
-                        <button *ngIf="detailsForm.get('deliveryLocation.searchQuery')?.value" 
-                          matSuffix 
-                          mat-icon-button 
-                          type="button" 
-                          aria-label="Clear address"
-                          (click)="clearAddress(detailsForm.get('deliveryLocation'))">
-                          <mat-icon>close</mat-icon>
-                        </button>
-
-                        <mat-autocomplete #autoDelivery="matAutocomplete" 
-                          [displayWith]="displayFn"
-                          (optionSelected)="onAddressSelected($event, detailsForm.get('deliveryLocation'))">
-                          <mat-option *ngFor="let feature of deliverySuggestions" [value]="feature">
-                            <div class="d-flex align-items-center py-1">
-                              <mat-icon class="me-2 text-secondary fs-6">place</mat-icon>
-                              <span class="fs-7 text-dark">{{ getLabel(feature) }}</span>
-                            </div>
-                          </mat-option>
-                        </mat-autocomplete>
-                      </mat-form-field>
-
-                      <div class="row g-2 align-items-center">
-                        <div class="col-6">
-                          <mat-form-field appearance="outline" class="w-100">
-                            <mat-label>Floor</mat-label>
-                            <input matInput type="number" formControlName="floor" min="0">
-                          </mat-form-field>
-                        </div>
-                        <div class="col-6">
-                          <mat-checkbox formControlName="hasElevator" color="primary">Has Elevator</mat-checkbox>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Notes -->
-                  <div class="col-12 mt-2">
-                    <mat-form-field appearance="outline" class="w-100">
-                      <mat-label>Additional Notes / Heavy Items</mat-label>
-                      <textarea matInput formControlName="notes" rows="3" placeholder="Sofa dimensions, IKEA pickup order numbers, fragile items..."></textarea>
-                    </mat-form-field>
-                  </div>
-
-                </div>
-
-                <div class="d-flex justify-content-between mt-4">
-                  <button type="button" (click)="stepper.previous()" class="btn btn-outline-dark rounded-pill px-4">Back</button>
-                  <button type="button" (click)="stepper.next()" [disabled]="detailsForm.invalid" class="btn btn-gamana-red text-white px-4 py-2 rounded-pill fw-bold">
-                    Next: Date & Contact &rarr;
-                  </button>
-                </div>
-              </form>
-            </mat-step>
-
-            <!-- STEP 3: Schedule & Contact -->
-            <mat-step [stepControl]="scheduleForm" label="Contact">
-              <form [formGroup]="scheduleForm" (ngSubmit)="submitBooking()" class="py-3">
-                <h4 class="fw-bold text-dark mb-4 fs-5">3. Moving Date & Your Information</h4>
-
-                <div class="row g-3">
-                  <div class="col-12 col-md-6">
-                    <mat-form-field appearance="outline" class="w-100">
-                      <mat-label>Moving Date</mat-label>
-                      <input matInput [matDatepicker]="picker" [min]="minDate" formControlName="moveDate">
-                      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                      <mat-datepicker #picker></mat-datepicker>
-                    </mat-form-field>
-                  </div>
-
-                  <div class="col-12 col-md-6">
-                    <mat-form-field appearance="outline" class="w-100">
-                      <mat-label>Preferred Start Time</mat-label>
-                      <mat-select formControlName="moveTime">
-                        <mat-option value="08:00">08:00 AM</mat-option>
-                        <mat-option value="10:00">10:00 AM</mat-option>
-                        <mat-option value="12:00">12:00 PM</mat-option>
-                        <mat-option value="14:00">02:00 PM</mat-option>
-                        <mat-option value="16:00">04:00 PM</mat-option>
-                      </mat-select>
-                    </mat-form-field>
-                  </div>
-
-                  <div class="col-12 col-md-4">
-                    <mat-form-field appearance="outline" class="w-100">
-                      <mat-label>Full Name</mat-label>
-                      <input matInput formControlName="fullName" placeholder="John Doe">
-                    </mat-form-field>
-                  </div>
-
-                  <div class="col-12 col-md-4">
-                    <mat-form-field appearance="outline" class="w-100">
-                      <mat-label>Email Address</mat-label>
-                      <input matInput type="email" formControlName="email" placeholder="john@example.com">
-                    </mat-form-field>
-                  </div>
-
-                  <div class="col-12 col-md-4">
-                    <mat-form-field appearance="outline" class="w-100">
-                      <mat-label>Phone Number</mat-label>
-                      <input matInput type="tel" formControlName="phone" placeholder="+358 40 123 4567">
-                    </mat-form-field>
-                  </div>
-                </div>
-
-                <!-- Summary Bar -->
-                <div class="mt-4 p-3 bg-gamana-burgundy text-white rounded-3 d-flex align-items-center justify-content-between">
-                  <div>
-                    <small class="text-uppercase text-gamana-red fw-bold tracking-wider fs-8">Estimated Total</small>
-                    <h3 class="mb-0 fw-black text-white">{{ calculatedTotal }}€</h3>
-                  </div>
-                  <small class="text-white-80 fs-8">{{ serviceForm.value.estimatedHours }} hours &#64; {{ selectedPkg?.ratePerHour }}€/h</small>
-                </div>
-
-                <div class="d-flex justify-content-between mt-4">
-                  <button type="button" (click)="stepper.previous()" class="btn btn-outline-dark rounded-pill px-4">Back</button>
-                  <button type="submit" [disabled]="scheduleForm.invalid || isLoading" class="btn btn-gamana-red text-white px-5 py-3 rounded-pill fw-bold shadow-sm fs-6">
-                    <span *ngIf="!isLoading">Confirm & Submit Booking</span>
-                    <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
-                  </button>
-                </div>
-              </form>
-            </mat-step>
-
-          </mat-stepper>
-
-        </div>
-      </div>
-    </div>
-
   </div>
+          </div>
+
+          <!-- MapLibre Map Container -->
+          <div class="mt-4" *ngIf="bookingResponse.routeResultDto">
+            <h6 class="fw-bold mb-2">Optimized Route Map</h6>
+            <div id="confirmation-map" style="height: 380px; width: 100%;" class="rounded border shadow-sm"></div>
+          </div>
+        </div>
+
+      </form>
+    </mat-step>
+
+  </mat-stepper>
 </div>
