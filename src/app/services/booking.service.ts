@@ -17,6 +17,10 @@ export class BookingService {
     return this.http.post<BookingResponseDto>(this.baseUrl + '/bookings', payload);
   }
 
+   getBookingById(id: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/bookings/${id}`);
+  }
+
   // Digitransit Address Search Helper
  
 }

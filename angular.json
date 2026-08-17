@@ -75,7 +75,7 @@
               "sourceMap": true
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -85,9 +85,12 @@
             },
             "development": {
               "buildTarget": "Gamana-Muttopalvelu-Frontend:build:development"
+            },
+            "local": {
+              "buildTarget": "Gamana-Muttopalvelu-Frontend:build"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "local"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n"
