@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MATERIAL_COMPONENTS } from '../../../../utills/material-imports';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-service-section',
@@ -9,6 +10,7 @@ import { MATERIAL_COMPONENTS } from '../../../../utills/material-imports';
   styleUrl: './service-section.component.css'
 })
 export class ServiceSectionComponent {
+  constructor(private router: Router) {}
 services: any[] = [
     {
       title: 'Apartment Moving',
@@ -39,4 +41,8 @@ services: any[] = [
       highlights: ['Landlord Guarantee', 'Deep Kitchen & Bath', 'Eco-Friendly Products']
     }
   ];
+
+   gotoOffer(): void {
+    this.router.navigate(['/offer']);
+  }
 }

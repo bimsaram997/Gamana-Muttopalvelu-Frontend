@@ -34,3 +34,41 @@ export interface BookingResponse {
   totalPrice: number;
   status: string;
 }
+
+export interface AddressDto {
+  label: string;
+  street: string;
+  houseNumber: string;
+  postalCode: string;
+  city: string;
+  latitude: number;
+  longitude: number;
+  floor: number;
+  hasElevator: boolean;
+}
+
+export interface CalculateRouteRequest {
+  office: AddressDto;
+  pickups: AddressDto[];
+  drops: AddressDto[];
+}
+
+export interface RouteResultDto {
+  totalDistanceKm: number;
+  totalDurationMinutes: number;
+  encodedPolyline: string;
+  optimizedWaypoints: AddressDto[];
+}
+
+export interface BookingResponseDto {
+  bookingId: string;
+  userId: string;
+  fullName: string;
+  email: string;
+  totalAddresses: number;
+  serviceDate: string;
+  totalPrice: number;
+  status: string;
+  routeResultDto: RouteResultDto;
+}
+

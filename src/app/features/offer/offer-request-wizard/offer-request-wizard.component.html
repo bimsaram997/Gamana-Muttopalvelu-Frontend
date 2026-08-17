@@ -1,0 +1,217 @@
+<div class="container my-4 offer-request-page">
+  <h2 class="fw-bold mb-4">Request an Offer</h2>
+
+  <mat-stepper #stepper linear="true">
+
+    <!-- Step 1: Contact Details & Moving Date -->
+    <mat-step [stepControl]="contactForm">
+      <form [formGroup]="contactForm">
+        <ng-template matStepLabel>Contact & Date</ng-template>
+        <h3 class="fw-bold mb-3">Contact & Moving Date</h3>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Name</mat-label>
+              <input matInput formControlName="fullName" required>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Email</mat-label>
+              <input matInput type="email" formControlName="email" required>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Phone Number</mat-label>
+              <input matInput formControlName="phone" required>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Desired Moving Date</mat-label>
+              <input matInput [matDatepicker]="picker" [min]="minDate" formControlName="moveDate" required>
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end mt-3">
+          <button mat-raised-button  class="btn-gamana-red" matStepperNext>Next: Departure Address</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 2: Departure Address -->
+    <mat-step [stepControl]="departureForm">
+      <form [formGroup]="departureForm">
+        <ng-template matStepLabel>Departure Address</ng-template>
+        <h3 class="fw-bold mb-3">Departure Details</h3>
+
+        <div class="card p-3 mb-3 border-light shadow-sm">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Departure Address</mat-label>
+            <input matInput formControlName="searchQuery" [matAutocomplete]="autoDeparture">
+            <button mat-icon-button matSuffix type="button" 
+                    (click)="clearAddress(departureForm, true)" 
+                    *ngIf="departureForm.get('searchQuery')?.value">
+              <mat-icon>clear</mat-icon>
+            </button>
+            <mat-autocomplete #autoDeparture="matAutocomplete" [displayWith]="displayFn" 
+                              (optionSelected)="onAddressSelected($event, departureForm)">
+              <mat-option *ngFor="let suggestion of departureSuggestions" [value]="suggestion">
+                {{ getLabel(suggestion) }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Post Office</mat-label>
+                <input matInput formControlName="city">
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Postcode</mat-label>
+                <input matInput formControlName="postalCode">
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Apartment Area m² </mat-label>
+                <input matInput type="number" formControlName="apartmentAreaM2" min="1" required>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Floor Number</mat-label>
+                <input matInput type="number" formControlName="floor" min="0">
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-4 d-flex align-items-center">
+              <mat-checkbox formControlName="hasElevator">Elevator Available</mat-checkbox>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-3">
+          <button mat-button matStepperPrevious>Back</button>
+          <button mat-raised-button  class="btn-gamana-red" matStepperNext>Next: Destination Address</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 3: Destination Address (Where are we moving to?) -->
+    <mat-step [stepControl]="destinationForm">
+      <form [formGroup]="destinationForm">
+        <ng-template matStepLabel>Where are we moving to?</ng-template>
+        <h3 class="fw-bold mb-3">Where are we moving to?</h3>
+
+        <div class="card p-3 mb-3 border-danger shadow-sm">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Destination Address </mat-label>
+            <input matInput formControlName="searchQuery" [matAutocomplete]="autoDestination" required>
+            <button mat-icon-button matSuffix type="button" 
+                    (click)="clearAddress(destinationForm, false)" 
+                    *ngIf="destinationForm.get('searchQuery')?.value">
+              <mat-icon>clear</mat-icon>
+            </button>
+            <mat-autocomplete #autoDestination="matAutocomplete" [displayWith]="displayFn" 
+                              (optionSelected)="onAddressSelected($event, destinationForm)">
+              <mat-option *ngFor="let suggestion of destinationSuggestions" [value]="suggestion">
+                {{ getLabel(suggestion) }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Post Office </mat-label>
+                <input matInput formControlName="city" required>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Postcode </mat-label>
+                <input matInput formControlName="postalCode" required>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Floor Number</mat-label>
+                <input matInput type="number" formControlName="floor" min="0">
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6 d-flex align-items-center">
+              <mat-checkbox formControlName="hasElevator">Elevator Available</mat-checkbox>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-3">
+          <button mat-button matStepperPrevious>Back</button>
+          <button mat-raised-button  class="btn-gamana-red" matStepperNext>Next: Additional Info</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 4: Additional Information & Consent -->
+    <mat-step [stepControl]="additionalInfoForm">
+      <form [formGroup]="additionalInfoForm" (ngSubmit)="sendOfferRequest($event)">
+        <ng-template matStepLabel>Additional Information</ng-template>
+        <h3 class="fw-bold mb-3">Additional Information</h3>
+
+        <div class="mb-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Services</mat-label>
+            <mat-select formControlName="serviceIds" multiple>
+              <!-- Binds numeric ID value -->
+              <mat-option *ngFor="let service of availableServices" [value]="service.id">
+                {{ service.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="mb-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Additional Information (maximum 500 characters)</mat-label>
+            <textarea matInput formControlName="notes" rows="4" maxlength="500"></textarea>
+            <mat-hint align="end">
+              {{ additionalInfoForm.get('notes')?.value?.length || 0 }}/500
+            </mat-hint>
+          </mat-form-field>
+        </div>
+
+        <div class="mb-4">
+          <mat-checkbox formControlName="privacyAgreed" required>
+            I agree to the processing of the information I have provided in accordance with the privacy policy. *
+          </mat-checkbox>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+          <button mat-button matStepperPrevious>Back</button>
+          <button mat-raised-button  class="btn-gamana-red" type="submit" [disabled]="additionalInfoForm.invalid || isLoading">
+            {{ isLoading ? 'Sending Request...' : 'Send Request' }}
+          </button>
+        </div>
+      </form>
+    </mat-step>
+
+  </mat-stepper>
+</div>

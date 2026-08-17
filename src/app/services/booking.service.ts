@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../environment.development';
-import { BookingResponse, CreateBookingPayload } from '../models/dto';
+import { environment } from '../../environments/environment';
+import { BookingResponse, BookingResponseDto, CreateBookingPayload } from '../models/dto';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
@@ -13,8 +13,12 @@ export class BookingService {
 
   constructor(private http: HttpClient) {}
 
-  createBooking(payload: CreateBookingPayload): Observable<BookingResponse> {
-    return this.http.post<BookingResponse>(this.baseUrl + '/bookings', payload);
+  createBooking(payload: CreateBookingPayload): Observable<BookingResponseDto> {
+    return this.http.post<BookingResponseDto>(this.baseUrl + '/bookings', payload);
+  }
+
+   getBookingById(id: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/bookings/${id}`);
   }
 
   // Digitransit Address Search Helper

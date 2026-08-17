@@ -1,0 +1,47 @@
+.offer-request-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Material Stepper Overrides */
+::ng-deep .mat-horizontal-stepper-header-container {
+  margin-bottom: 24px;
+}
+
+/* ::ng-deep .mat-step-header .mat-step-icon-selected,
+::ng-deep .mat-step-header .mat-step-icon-state-done {
+  background-color: #0d6efd;
+  color: #fff;
+} */
+
+/* Form Cards */
+.card {
+  border-radius: 8px;
+  background-color: #fafafa;
+}
+
+/* Form Fields */
+mat-form-field {
+  margin-bottom: 4px;
+}
+
+mat-hint {
+  font-size: 12px;
+}
+
+/* Button Spacing */
+.d-flex button {
+  min-width: 120px;
+}
+
+.btn-gamana-red {
+  background-color: var(--gamana-red, #D2232A) !important;
+  color: #FFFFFF !important;
+  transition: all 0.2s ease;
+}
+
+.btn-gamana-red:hover {
+  background-color: var(--gamana-red-hover, #B0181E) !important;
+  color: #FFFFFF !important;
+}

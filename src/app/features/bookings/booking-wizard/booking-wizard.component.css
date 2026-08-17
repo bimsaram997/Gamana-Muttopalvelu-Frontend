@@ -1,3 +1,6 @@
+@import 'leaflet/dist/leaflet.css';
+@import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
+
 :host {
   display: block;
   width: 100% !important;
@@ -7,7 +10,19 @@
   font-family: 'Montserrat', sans-serif;
 }
 
-/* Custom Gamana Brand Colors */
+/* Map Specific Rules */
+.map-container {
+  height: 420px;
+  width: 100%;
+  z-index: 1;
+}
+
+/* Hide default routing control instruction box overlay on the map */
+.leaflet-routing-container {
+  display: none !important;
+}
+
+/* Gamana Brand Colors */
 .bg-gamana-burgundy {
   background-color: var(--gamana-burgundy, #300C0E) !important;
 }
@@ -58,8 +73,8 @@
   cursor: pointer;
 }
 
-/* Fix spacing for Material Form Fields inside Bootstrap columns */
 mat-form-field {
+  width: 100%;
   margin-bottom: -0.25rem;
 }
 
@@ -78,4 +93,11 @@ mat-icon {
 
 .address-select-panel mat-option:last-child {
   border-bottom: none;
+}
+#confirmation-map {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  min-height: 380px;
+  overflow: hidden;
 }
