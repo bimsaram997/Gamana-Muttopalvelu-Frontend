@@ -24,4 +24,9 @@ keyServices = [
   goToBooking(): void {
     this.router.navigate(['/booking']);
   }
+
+  gotoOffer(): void {
+    this.router.navigate(['/offer']);
+  }
 }
+
