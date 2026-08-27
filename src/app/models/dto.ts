@@ -72,3 +72,26 @@ export interface BookingResponseDto {
   routeResultDto: RouteResultDto;
 }
 
+export interface CreateOfferPayload {
+  fullName: string;
+  email: string;
+  phone: string;
+  desiredMovingDate: string;
+  departureAddress: AddressDto;
+  destinationAddress: AddressDto;
+  serviceIds: number[];
+  additionalInfo?: string;
+  privacyAgreed: boolean;
+}
+export interface OfferResponseDto {
+  offerId: string;
+  userId: string | null;
+  fullName: string;
+  email: string;
+  phone: string;
+  desiredMovingDate: string;
+  totalAddresses: number;
+  serviceIds: number[];
+  additionalInfo: string | null;
+  privacyAgreed: boolean;
+}

@@ -20,6 +20,7 @@ header {
   width: 100% !important;
   padding-left: 0 !important;
   padding-right: 0 !important;
+  cursor: pointer;
 }
 .top-bar {
   background-color: #300C0E !important;
