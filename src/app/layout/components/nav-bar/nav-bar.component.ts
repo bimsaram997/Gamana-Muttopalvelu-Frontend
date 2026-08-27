@@ -21,4 +21,8 @@ constructor(private router: Router) {}
    goToBooking(): void {
     this.router.navigate(['/booking']);
   }
+
+  goHome(): void {
+    this.router.navigate(['/']);
+  }
 }

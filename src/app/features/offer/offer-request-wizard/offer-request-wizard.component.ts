@@ -1,20 +1,47 @@
-import { Component } from '@angular/core';
-import { MATERIAL_COMPONENTS } from '../../../utills/material-imports';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+
+// Angular Material Imports
 import { MatStepperModule } from '@angular/material/stepper';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+
+import { debounceTime, filter, switchMap } from 'rxjs/operators';
 import { AddressLookupService } from '../../../services/address-lookup.service';
-import { debounceTime, filter, switchMap } from 'rxjs';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { AddressDto, CreateOfferPayload } from '../../../models/dto';
+import { OfferService } from '../../../services/offer.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-offer-request-wizard',
   standalone: true,
-  imports: [MATERIAL_COMPONENTS, MatStepperModule,],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatStepperModule,
+    MatSelectModule,
+    MatAutocompleteModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCheckboxModule,
+    MatDatepickerModule,
+    MatNativeDateModule
+  ],
   templateUrl: './offer-request-wizard.component.html',
   styleUrl: './offer-request-wizard.component.css'
 })
-export class OfferRequestWizardComponent {
-contactForm!: FormGroup;
+export class OfferRequestWizardComponent implements OnInit {
+  contactForm!: FormGroup;
   departureForm!: FormGroup;
   destinationForm!: FormGroup;
   additionalInfoForm!: FormGroup;
@@ -37,8 +64,10 @@ contactForm!: FormGroup;
 
   constructor(
     private fb: FormBuilder,
-    //private offerRequestService: OfferRequestService,
-    private addressLookupService: AddressLookupService
+    // private offerRequestService: OfferRequestService,
+    private addressLookupService: AddressLookupService,
+    private offerService: OfferService,
+    private router: Router
   ) {
     this.createForms();
   }
@@ -56,38 +85,33 @@ contactForm!: FormGroup;
       moveDate: ['', Validators.required]
     });
 
-    // Step 2: Departure Address
-    this.departureForm = this.fb.group({
-      searchQuery: [''],
-      street: [''],
-      houseNumber: [''],
-      city: [''], // Post office
-      postalCode: [''], // Postcode
-      apartmentAreaM2: [null, [Validators.required, Validators.min(1)]], // Apartment area m2*
-      floor: [0, [Validators.required, Validators.min(0)]],
-      hasElevator: [false],
-      latitude: [0],
-      longitude: [0]
-    });
+    // Step 2: Departure Address Group (AddressDto structure + UI inputs)
+    this.departureForm = this.createAddressGroup(true);
 
-    // Step 3: Destination Address (Where are we moving to?)
-    this.destinationForm = this.fb.group({
-      searchQuery: ['', Validators.required], // Destination address*
-      street: [''],
-      houseNumber: [''],
-      city: ['', Validators.required], // Post office*
-      postalCode: ['', Validators.required], // Postcode*
-      floor: [0, [Validators.required, Validators.min(0)]],
-      hasElevator: [false],
-      latitude: [0],
-      longitude: [0]
-    });
+    // Step 3: Destination Address Group (AddressDto structure + UI inputs)
+    this.destinationForm = this.createAddressGroup(false);
 
     // Step 4: Additional Information
     this.additionalInfoForm = this.fb.group({
-      serviceIds: [[]], // Array of numeric service IDs (e.g., [1, 3])
+      serviceIds: [[]],
       notes: ['', [Validators.maxLength(500)]],
-      privacyAgreed: [false, Validators.requiredTrue] // Privacy agreement checkbox*
+      privacyAgreed: [false, Validators.requiredTrue]
+    });
+  }
+
+  private createAddressGroup(isDeparture: boolean): FormGroup {
+    return this.fb.group({
+      searchQuery: ['', isDeparture ? [] : [Validators.required]],
+      label: [''],
+      street: [''],
+      houseNumber: [''],
+      postalCode: ['', isDeparture ? [] : [Validators.required]],
+      city: ['', isDeparture ? [] : [Validators.required]],
+      latitude: [0],
+      longitude: [0],
+      floor: [0, [Validators.required, Validators.min(0)]],
+      hasElevator: [false],
+      ...(isDeparture && { apartmentAreaM2: [null, [Validators.required, Validators.min(1)]] })
     });
   }
 
@@ -139,6 +163,7 @@ contactForm!: FormGroup;
 
     formGroup.patchValue({
       searchQuery: label,
+      label: label,
       street: props.street || props.name || '',
       houseNumber: props.housenumber || props.houseNumber || '',
       postalCode: props.postalcode || props.postalCode || '',
@@ -151,6 +176,7 @@ contactForm!: FormGroup;
   clearAddress(formGroup: FormGroup, isDeparture: boolean): void {
     formGroup.patchValue({
       searchQuery: '',
+      label: '',
       street: '',
       houseNumber: '',
       postalCode: '',
@@ -166,6 +192,20 @@ contactForm!: FormGroup;
     }
   }
 
+  private mapToAddressDto(groupValue: any): AddressDto {
+    return {
+      label: groupValue.label || groupValue.searchQuery,
+      street: groupValue.street,
+      houseNumber: groupValue.houseNumber,
+      postalCode: groupValue.postalCode,
+      city: groupValue.city,
+      latitude: Number(groupValue.latitude) || 0,
+      longitude: Number(groupValue.longitude) || 0,
+      floor: Number(groupValue.floor) || 0,
+      hasElevator: Boolean(groupValue.hasElevator)
+    };
+  }
+
   sendOfferRequest(event?: Event): void {
     if (event) event.preventDefault();
 
@@ -177,35 +217,34 @@ contactForm!: FormGroup;
     ) {
       this.isLoading = true;
 
-      const payload = {
+      const payload: CreateOfferPayload = {
         fullName: this.contactForm.value.fullName,
         email: this.contactForm.value.email,
         phone: this.contactForm.value.phone,
-        desiredMovingDate: this.contactForm.value.moveDate,
-        departureAddress: {
-          ...this.departureForm.value,
-          apartmentAreaM2: Number(this.departureForm.value.apartmentAreaM2),
-          floor: Number(this.departureForm.value.floor)
-        },
-        destinationAddress: {
-          ...this.destinationForm.value,
-          floor: Number(this.destinationForm.value.floor)
-        },
-        serviceIds: (this.additionalInfoForm.value.serviceIds || []).map((id: any) => Number(id)), // Array of numeric IDs
+        desiredMovingDate: new Date(this.contactForm.value.moveDate).toISOString(),
+        departureAddress: this.mapToAddressDto(this.departureForm.value),
+        destinationAddress: this.mapToAddressDto(this.destinationForm.value),
+        serviceIds: (this.additionalInfoForm.value.serviceIds || []).map((id: any) => Number(id)),
         additionalInfo: this.additionalInfoForm.value.notes,
         privacyAgreed: this.additionalInfoForm.value.privacyAgreed
       };
 
-      // this.offerRequestService.submitOfferRequest(payload).subscribe({
-      //   next: (res: any) => {
-      //     this.isSubmitted = true;
-      //     this.isLoading = false;
-      //   },
-      //   error: (err) => {
-      //     console.error('Error submitting offer request:', err);
-      //     this.isLoading = false;
-      //   }
-      // });
+      console.log('Offer Request Payload:', payload);
+
+       this.offerService.createOffer  (payload).subscribe({
+         next: (res: any) => {
+           this.isSubmitted = true;
+          this.isLoading = false;
+         },
+       error: (err) => {
+          console.error('Error submitting offer request:', err);
+           this.isLoading = false;
+        }
+      });
     }
+  }
+
+  goHome(): void {
+    this.router.navigate(['/']);
   }
 }

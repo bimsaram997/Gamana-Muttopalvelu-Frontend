@@ -42,7 +42,7 @@
     <div class="container">
       
       <!-- Brand Logo + Creative Text Styling -->
-      <a class="navbar-brand d-flex align-items-center gap-2 text-decoration-none" routerLink="/">
+      <a class="navbar-brand d-flex align-items-center gap-2 text-decoration-none" routerLink="/" (click)="goHome()">
         <img src="assets/logo.png" alt="Gamana Logo" height="52" class="d-inline-block">
         
         <div class="d-flex flex-column lh-1 ms-1">
@@ -60,10 +60,10 @@
       <!-- Navigation Links -->
       <div class="collapse navbar-collapse" id="navbarGamana">
         <ul class="navbar-nav mx-auto mb-2 mb-lg-0 fw-bold gap-lg-4 text-center">
+           <li class="nav-item"><a class="nav-link text-dark" href="#aboutUs">About us </a></li>
           <li class="nav-item"><a class="nav-link text-dark" href="#services">Services</a></li>
-          <li class="nav-item"><a class="nav-link text-dark" href="#packages">Pricing </a></li>
-          <li class="nav-item"><a class="nav-link text-dark" href="#cleaning">Cleaning</a></li>
-          <li class="nav-item"><a class="nav-link text-dark" routerLink="/contact">Contact</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="#pricing">Pricing </a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="#contact">Contact</a></li>
         </ul>
 
         <!-- Action Button -->

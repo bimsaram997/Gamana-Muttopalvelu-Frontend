@@ -1,4 +1,16 @@
 <div class="container my-4 offer-request-page">
+  <div *ngIf="isSubmitted" class="text-center py-5 shadow-sm rounded border p-4 bg-white">
+    <mat-icon class="icon" style="font-size: 64px; width: 64px; height: 64px;">check_circle</mat-icon>
+    <h2 class="fw-bold mt-3">Thank you, your message has been received!</h2>
+    <p class="text-muted fs-5 mt-2">
+      We will review your request for quotation and contact you as soon as possible.
+    </p>
+    <button mat-raised-button class="mt-4 px-4 py-2 btn-gamana-red" (click)="goHome()">
+      Go to Home Page
+    </button>
+  </div>
+
+  <ng-container *ngIf="!isSubmitted">
   <h2 class="fw-bold mb-4">Request an Offer</h2>
 
   <mat-stepper #stepper linear="true">
@@ -214,4 +226,5 @@
     </mat-step>
 
   </mat-stepper>
+  </ng-container>
 </div>

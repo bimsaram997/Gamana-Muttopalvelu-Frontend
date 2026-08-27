@@ -45,3 +45,7 @@ mat-hint {
   background-color: var(--gamana-red-hover, #B0181E) !important;
   color: #FFFFFF !important;
 }
+
+.icon{
+  color: var(--gamana-red, #D2232A);
+}
