@@ -5,6 +5,7 @@ import { ServiceSectionComponent } from '../../sections/service-section/service-
 import { PricingPackagesComponent } from '../../sections/pricing-packages/pricing-packages.component';
 import { TestimonialsComponent } from '../../sections/testimonials/testimonials.component';
 import { FooterComponent } from '../../sections/footer/footer.component';
+import { AnimateOnScrollDirective } from '../../../../directives/animate-on-scroll.directive';
 
 @Component({
   selector: 'app-landing-page',
@@ -14,7 +15,8 @@ import { FooterComponent } from '../../sections/footer/footer.component';
     ServiceSectionComponent,
     PricingPackagesComponent,
     TestimonialsComponent,
-    FooterComponent],
+    FooterComponent,
+  AnimateOnScrollDirective],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.css'
 })
