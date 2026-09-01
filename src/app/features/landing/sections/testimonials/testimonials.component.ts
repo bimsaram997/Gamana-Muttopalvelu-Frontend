@@ -1,5 +1,10 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MATERIAL_COMPONENTS } from '../../../../utills/material-imports';
+import { Subscription } from 'maplibre-gl';
+import { ReviewAdminService } from '../../../../services/admin/review-admin.service';
+import { LanguageService } from '../../../../services/language.service';
+import { Router } from '@angular/router';
+import { ReviewResponseDto } from '../../../../models/admin.dto';
 
 @Component({
   selector: 'app-testimonials',
@@ -8,34 +13,55 @@ import { MATERIAL_COMPONENTS } from '../../../../utills/material-imports';
   templateUrl: './testimonials.component.html',
   styleUrl: './testimonials.component.css'
 })
-export class TestimonialsComponent {
-googleRating = '4.6';
+export class TestimonialsComponent implements OnInit, OnDestroy {
+  googleRating = '4.6';
   totalReviews = '50+';
+  private subs: Subscription[] = [];
+  currentLanguage: string = 'en';
+  private langSub!: Subscription;
+  reviews: ReviewResponseDto[] = [];
 
-  reviews: any[] = [
-    {
-      author: 'Mikael K.',
-      location: 'Tampere',
-      rating: 5,
-      comment: 'Super fast and careful movers! They handled my two-bedroom apartment move seamlessly. Very punctual and great hourly rates.',
-      date: 'Recent Move',
-      serviceUsed: 'Apartment Moving'
-    },
-    {
-      author: 'Sarah L.',
-      location: 'Hervanta',
-      rating: 5,
-      comment: 'Ordered IKEA furniture delivery with assembly help. They picked up the items directly from the store and brought them up to the 4th floor.',
-      date: 'Recent Move',
-      serviceUsed: 'Store Pickup'
-    },
-    {
-      author: 'Juho P.',
-      location: 'Pirkkala',
-      rating: 5,
-      comment: 'Excellent service. The driver was friendly, strong, and equipped with blankets and straps to keep everything safe during transit.',
-      date: 'Recent Move',
-      serviceUsed: 'Van + 1 Mover'
+  constructor(private router: Router,
+    public languageService: LanguageService, // Changed to public so template can read it
+    private cdr: ChangeDetectorRef,
+    private reviewAdminService: ReviewAdminService
+  ) { }
+
+  ngOnInit(): void {
+    this.langSub = this.languageService.currentLanguage$.subscribe(lang => {
+      console.log('PricingPackagesComponent received new language:', lang);
+      this.currentLanguage = lang;
+      this.cdr.detectChanges(); // Force instant UI re-render
+    });
+    this.getAllReviews();
+    
+  }
+
+  getAllReviews(): void {
+    const sub = this.reviewAdminService.getAll().subscribe(
+      (response: any) => {
+        this.reviews = response;
+        this.cdr.detectChanges();
+      }
+    );
+    this.subs.push(sub);
+  }
+
+    // Helper method for static hardcoded UI text
+  t(key: string): string {
+    return this.languageService.translate(key);
+  }
+  getTranslation<T extends { languageCode: string }>(translations: T[]): T | undefined {
+    if (!translations || translations.length === 0) return undefined;
+    
+    return translations.find(t => t.languageCode.toLowerCase() === this.currentLanguage.toLowerCase()) 
+        || translations[0];
+  }
+
+  ngOnDestroy(): void {
+    if (this.langSub) {
+      this.langSub.unsubscribe();
     }
-  ];
+    this.subs.forEach(sub => sub?.unsubscribe());
+  }
 }

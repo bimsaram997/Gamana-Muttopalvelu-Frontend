@@ -5,13 +5,13 @@
     <div class="row justify-content-center text-center mb-5">
       <div class="col-lg-8">
         <span class="badge bg-danger bg-opacity-10 text-gamana-red fw-bold px-3 py-2 rounded-pill fs-7 mb-2">
-          SIMPLE PROCESS
+          {{ t('howItWorks.badge') }}
         </span>
         <h2 class="display-6 fw-black text-dark mb-3">
-          How It <span class="text-gamana-red">Works</span>
+          {{ t('howItWorks.title_main') }} <span class="text-gamana-red">{{ t('howItWorks.title_highlight') }}</span>
         </h2>
         <p class="lead text-muted fs-6">
-          Relocating or transferring furniture in Tampere is quick and transparent in three simple steps.
+          {{ t('howItWorks.subheading') }}
         </p>
       </div>
     </div>
@@ -23,7 +23,7 @@
           
           <!-- Step Number Badge -->
           <div class="step-number position-absolute top-0 end-0 m-3 fw-black text-muted opacity-25 fs-2">
-            {{ step.number }}
+            {{ step.stepNumber }}
           </div>
 
           <!-- Step Icon Circle -->
@@ -31,10 +31,12 @@
             <mat-icon class="fs-2">{{ step.icon }}</mat-icon>
           </div>
 
-          <h3 class="fw-bold text-dark fs-5 mb-3">{{ step.title }}</h3>
+          <h3 class="fw-bold text-dark fs-5 mb-3">
+            {{ getTranslation(step.translations)?.title }}
+          </h3>
           
           <p class="text-muted fs-7 mb-0">
-            {{ step.description }}
+            {{ getTranslation(step.translations)?.description }}
           </p>
 
         </div>
@@ -46,7 +48,7 @@
       <a 
         routerLink="/booking" 
         class="btn btn-gamana-red rounded-pill px-4 py-3 fw-bold fs-6 shadow-sm text-decoration-none">
-        Book Your Move Now &rarr;
+        {{ t('howItWorks.cta_button') }} &rarr;
       </a>
     </div>
 

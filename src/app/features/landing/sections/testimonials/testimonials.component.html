@@ -5,17 +5,17 @@
     <div class="row justify-content-center text-center mb-5">
       <div class="col-lg-8">
         <span class="badge bg-danger bg-opacity-10 text-gamana-red fw-bold px-3 py-2 rounded-pill fs-7 mb-2">
-          CUSTOMER REVIEWS
+          {{ t('reviews.badge') }}
         </span>
         <h2 class="display-6 fw-black text-dark mb-3">
-          Trusted by Movers in <span class="text-gamana-red">Tampere</span>
+          {{ t('reviews.title_main') }} <span class="text-gamana-red">{{ t('reviews.title_highlight') }}</span>
         </h2>
         
         <!-- Google Rating Pill -->
         <div class="d-inline-flex align-items-center gap-2 bg-light px-3 py-2 rounded-pill shadow-sm border mt-2">
           <mat-icon class="text-warning fs-5">star</mat-icon>
           <span class="fw-bold text-dark fs-6">{{ googleRating }} / 5.0</span>
-          <span class="text-muted fs-7">({{ totalReviews }} Google Reviews)</span>
+          <span class="text-muted fs-7">({{ totalReviews }} {{ t('reviews.google_reviews_suffix') }})</span>
         </div>
       </div>
     </div>
@@ -28,12 +28,14 @@
           <div>
             <!-- Star Rating Header -->
             <div class="d-flex align-items-center gap-1 text-warning mb-3">
-              <mat-icon *ngFor="let star of [1,2,3,4,5]">star</mat-icon>
+              <mat-icon *ngFor="let star of [1,2,3,4,5]">
+                {{ star <= review.rating ? 'star' : 'star_border' }}
+              </mat-icon>
             </div>
 
-            <!-- Review Text -->
+            <!-- Review Comment Text from backend translations -->
             <p class="text-dark fs-7 fst-italic mb-4">
-              "{{ review.comment }}"
+              "{{ getTranslation(review.translations)?.comment }}"
             </p>
           </div>
 
@@ -41,7 +43,11 @@
           <div class="border-top pt-3 d-flex align-items-center justify-content-between">
             <div>
               <h6 class="fw-bold text-dark mb-0 fs-7">{{ review.author }}</h6>
-              <small class="text-muted fs-8">{{ review.location }} • {{ review.serviceUsed }}</small>
+              <small class="text-muted fs-8">
+                {{ review.location }}
+                <span *ngIf="review.location && getTranslation(review.translations)?.serviceUsed"> • </span>
+                {{ getTranslation(review.translations)?.serviceUsed }}
+              </small>
             </div>
             <mat-icon class="text-gamana-red opacity-50 fs-4">format_quote</mat-icon>
           </div>
