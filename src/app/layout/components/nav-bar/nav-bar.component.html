@@ -13,7 +13,7 @@
         <span class="text-white-50">|</span>
         <span class="text-white-50 d-flex align-items-center gap-1">
           <mat-icon class="text-gamana-red fs-6">location_on</mat-icon>
-          The moving experts in Tampere
+          {{ t('header.topbar_location') }}
         </span>
       </div>
 
@@ -21,7 +21,7 @@
       <div class="d-flex align-items-center gap-3">
         <div class="d-flex align-items-center gap-1 bg-white bg-opacity-10 px-3 py-1 rounded-pill fs-7">
           <span class="text-warning fw-bold">★ 4.6/5</span>
-          <span class="text-white-50">(Google Reviews)</span>
+          <span class="text-white-50">({{ t('header.topbar_reviews') }})</span>
         </div>
 
         <button mat-button [matMenuTriggerFor]="langMenu" class="text-white px-2 fw-semibold">
@@ -29,8 +29,8 @@
           <mat-icon>arrow_drop_down</mat-icon>
         </button>
         <mat-menu #langMenu="matMenu">
-          <button mat-menu-item (click)="setLanguage('FI')">🇫🇮 Suomi</button>
           <button mat-menu-item (click)="setLanguage('EN')">🇬🇧 English</button>
+          <button mat-menu-item (click)="setLanguage('FI')">🇫🇮 Suomi</button>
         </mat-menu>
       </div>
 
@@ -47,8 +47,8 @@
         
         <div class="d-flex flex-column lh-1 ms-1">
           <span class="brand-title fw-black tracking-wider text-gamana-red">GAMANA</span>
-          <span class="brand-subtitle text-uppercase fw-bold text-dark">MUUTTOPALVELU</span>
-          <span class="brand-tagline text-muted">Your belongings • Our responsibility</span>
+          <span class="brand-subtitle text-uppercase fw-bold text-dark">{{ t('header.brand_subtitle') }}</span>
+          <span class="brand-tagline text-muted">{{ t('header.brand_tagline') }}</span>
         </div>
       </a>
 
@@ -60,16 +60,16 @@
       <!-- Navigation Links -->
       <div class="collapse navbar-collapse" id="navbarGamana">
         <ul class="navbar-nav mx-auto mb-2 mb-lg-0 fw-bold gap-lg-4 text-center">
-           <li class="nav-item"><a class="nav-link text-dark" href="#aboutUs">About us </a></li>
-          <li class="nav-item"><a class="nav-link text-dark" href="#services">Services</a></li>
-          <li class="nav-item"><a class="nav-link text-dark" href="#pricing">Pricing </a></li>
-          <li class="nav-item"><a class="nav-link text-dark" href="#contact">Contact</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="#aboutUs">{{ t('header.nav_about') }}</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="#services">{{ t('header.nav_services') }}</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="#pricing">{{ t('header.nav_pricing') }}</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="#contact">{{ t('header.nav_contact') }}</a></li>
         </ul>
 
         <!-- Action Button -->
         <div class="d-flex justify-content-center pt-2 pt-lg-0">
           <a mat-flat-button color="warn" (click)="goToBooking()" class="rounded-pill px-4 py-2 fw-bold text-white shadow-sm">
-            Book Online &rarr;
+            {{ t('header.book_online') }} &rarr;
           </a>
         </div>
       </div>

@@ -1,65 +1,72 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MATERIAL_COMPONENTS } from '../../../../utills/material-imports';
 import { Router } from '@angular/router';
+import { PackageAdminService } from '../../../../services/admin/package-admin.service';
+import { PackageResponseDto } from '../../../../models/admin.dto';
+import { LanguageService } from '../../../../services/language.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-pricing-packages',
   standalone: true,
-  imports: [MATERIAL_COMPONENTS],
+  imports: [MATERIAL_COMPONENTS], // Removed TranslatePipe dependency
   templateUrl: './pricing-packages.component.html',
   styleUrl: './pricing-packages.component.css'
 })
-export class PricingPackagesComponent {
+export class PricingPackagesComponent implements OnInit, OnDestroy {
+  private subs: Subscription[] = [];
+  packages: PackageResponseDto[] = [];
+  currentLanguage: string = 'en';
+  private langSub!: Subscription;
 
-  constructor(private router: Router) {}
-packages: any[] = [
-    {
-      id: 1,
-      title: 'Van Only',
-      price: '25€',
-      unit: 'per hour',
-      description: 'Ideal if you have helpers and just need a spacious moving van with a driver.',
-      features: [
-        'Spacious Moving Van',
-        'Professional Driver',
-        'Fuel & Local Mileage Included',
-        'Basic Carrying Support'
-      ]
-    },
-    {
-      id: 2,
-      title: 'Van + 1 Helper',
-      price: '45€',
-      unit: 'per hour',
-      popular: true,
-      description: 'Most popular for 1–2 room apartment moves and store pickups.',
-      features: [
-        'Spacious Moving Van',
-        '1 Active Helper / Driver',
-        'Furniture Straps & Protection',
-        'Assembly / Disassembly Tool Support',
-        'Transparent Hourly Billing'
-      ]
-    },
-    {
-      id: 3,
-      title: 'Van + 2 Helpers',
-      price: '65€',
-      unit: 'per hour',
-      description: 'Fastest option for larger homes, heavy items, and multi-floor moves.',
-      features: [
-        'Spacious Moving Van',
-        '2 Full-Time Helpers',
-        'Complete Heavy Lifting',
-        'Maximum Protection & Care',
-        'Fast Load & Unload Time'
-      ]
-    }
-  ];
+  constructor(
+    private router: Router,
+    private packageAdminService: PackageAdminService,
+    public languageService: LanguageService, // Changed to public so template can read it
+    private cdr: ChangeDetectorRef
+  ) { }
+
+  ngOnInit(): void {
+    this.langSub = this.languageService.currentLanguage$.subscribe(lang => {
+      console.log('PricingPackagesComponent received new language:', lang);
+      this.currentLanguage = lang;
+      this.cdr.detectChanges(); // Force instant UI re-render
+    });
+    this.getAllPackages();
+  }
+
+  // Helper method for static hardcoded UI text
+  t(key: string): string {
+    return this.languageService.translate(key);
+  }
+
+  getAllPackages(): void {
+    const sub = this.packageAdminService.getAll().subscribe(
+      (response: any) => {
+        this.packages = response;
+        this.cdr.detectChanges();
+      }
+    );
+    this.subs.push(sub);
+  }
+
+  getTranslation<T extends { languageCode: string }>(translations: T[]): T | undefined {
+    if (!translations || translations.length === 0) return undefined;
+    
+    return translations.find(t => t.languageCode.toLowerCase() === this.currentLanguage.toLowerCase()) 
+        || translations[0];
+  }
 
   selectPackageAndBook(packageId: number): void {
     this.router.navigate(['/booking'], {
       queryParams: { packageId: packageId }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.langSub) {
+      this.langSub.unsubscribe();
+    }
+    this.subs.forEach(sub => sub?.unsubscribe());
   }
 }
