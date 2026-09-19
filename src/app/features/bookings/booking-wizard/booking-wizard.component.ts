@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -16,23 +16,15 @@ import { MatNativeDateModule } from '@angular/material/core';
 
 import { ActivatedRoute } from '@angular/router';
 import { debounceTime, switchMap, filter } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import * as maplibregl from 'maplibre-gl';
+
 import { BookingService } from '../../../services/booking.service';
 import { AddressLookupService } from '../../../services/address-lookup.service';
 import { AddressDto, CreateBookingPayload } from '../../../models/dto';
-import * as polyline from '@mapbox/polyline';
-// MapLibre GL Import
-import * as maplibregl from 'maplibre-gl';
-
-export interface PackageOption {
-  id: number;
-  title: string;
-  price: string;
-  ratePerHour: number;
-  unit: string;
-  popular?: boolean;
-  description: string;
-  features: string[];
-}
+import { PackageResponseDto } from '../../../models/admin.dto';
+import { PackageAdminService } from '../../../services/admin/package-admin.service';
+import { LanguageService } from '../../../services/language.service';
 
 @Component({
   selector: 'app-booking-wizard',
@@ -71,43 +63,18 @@ export class BookingWizardComponent implements OnInit, OnDestroy {
   deliverySuggestions: any[] = [];
 
   private map: maplibregl.Map | null = null;
-
-  packages: PackageOption[] = [
-    {
-      id: 1,
-      title: 'Van Only',
-      price: '25€',
-      ratePerHour: 25,
-      unit: 'per hour',
-      description: 'Ideal if you have helpers and just need a spacious moving van with a driver.',
-      features: ['Spacious Moving Van', 'Professional Driver', 'Fuel & Local Mileage Included', 'Basic Carrying Support']
-    },
-    {
-      id: 2,
-      title: 'Van + 1 Helper',
-      price: '45€',
-      ratePerHour: 45,
-      unit: 'per hour',
-      popular: true,
-      description: 'Most popular for 1–2 room apartment moves and store pickups.',
-      features: ['Spacious Moving Van', '1 Active Helper / Driver', 'Furniture Straps & Protection', 'Assembly / Disassembly Tool Support', 'Transparent Hourly Billing']
-    },
-    {
-      id: 3,
-      title: 'Van + 2 Helpers',
-      price: '65€',
-      ratePerHour: 65,
-      unit: 'per hour',
-      description: 'Fastest option for larger homes, heavy items, and multi-floor moves.',
-      features: ['Spacious Moving Van', '2 Full-Time Helpers', 'Complete Heavy Lifting', 'Maximum Protection & Care', 'Fast Load & Unload Time']
-    }
-  ];
+  packages: PackageResponseDto[] = [];
+  currentLanguage: string = 'en';
+  private subs: Subscription[] = [];
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private bookingService: BookingService,
-    private addressLookupService: AddressLookupService
+    private addressLookupService: AddressLookupService,
+    private packageAdminService: PackageAdminService,
+    public languageService: LanguageService,
+    private cdr: ChangeDetectorRef
   ) {
     this.createForms();
   }
@@ -120,18 +87,68 @@ export class BookingWizardComponent implements OnInit, OnDestroy {
       }
     });
 
+    const langSub = this.languageService.currentLanguage$.subscribe(lang => {
+      this.currentLanguage = lang;
+      this.cdr.detectChanges();
+    });
+    this.subs.push(langSub);
+
+    this.getAllPackages();
     this.setupAddressAutocomplete();
+  }
+
+  t(key: string): string {
+    return this.languageService.translate(key);
+  }
+
+  getAllPackages(): void {
+    const sub = this.packageAdminService.getAll().subscribe({
+      next: (response: PackageResponseDto[]) => {
+        this.packages = (response || [])
+          .filter(p => p.isActive)
+          .sort((a, b) => a.displayOrder - b.displayOrder);
+
+        if (this.packages.length > 0 && !this.serviceForm.get('selectedPackageId')?.value) {
+          this.serviceForm.patchValue({ selectedPackageId: this.packages[0].id });
+        }
+
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error fetching packages:', err)
+    });
+    this.subs.push(sub);
+  }
+
+  getTranslation<T extends { languageCode: string }>(translations: T[] | undefined): T | undefined {
+    if (!translations || translations.length === 0) return undefined;
+    
+    return translations.find(t => t.languageCode.toLowerCase() === this.currentLanguage.toLowerCase()) 
+        || translations[0];
+  }
+
+  get selectedPkg(): PackageResponseDto | undefined {
+    const pkgId = Number(this.serviceForm.get('selectedPackageId')?.value);
+    return this.packages.find(p => p.id === pkgId) || this.packages[0];
+  }
+
+  get calculatedTotal(): number {
+    const hours = Number(this.serviceForm.get('estimatedHours')?.value) || 1;
+    const cleaningExtra = this.serviceForm.get('includeCleaning')?.value ? 110 : 0;
+    const rate = this.selectedPkg?.ratePerHour || 0;
+    
+    return (rate * hours) + cleaningExtra;
   }
 
   ngOnDestroy(): void {
     if (this.map) {
       this.map.remove();
     }
+    this.subs.forEach(s => s?.unsubscribe());
   }
 
   createForms(): void {
     this.serviceForm = this.fb.group({
-      selectedPackageId: [2, Validators.required],
+      selectedPackageId: [null, Validators.required],
       estimatedHours: [2, [Validators.required, Validators.min(1)]],
       includeCleaning: [false]
     });
@@ -281,13 +298,9 @@ export class BookingWizardComponent implements OnInit, OnDestroy {
     }
   }
 
-  // --- MapLibre Route Renderer ---
   private initConfirmationMap(): void {
     const container = document.getElementById('confirmation-map');
-    if (!container) {
-      console.error('Map container #confirmation-map not found in DOM.');
-      return;
-    }
+    if (!container) return;
 
     if (this.map) {
       this.map.remove();
@@ -336,7 +349,6 @@ export class BookingWizardComponent implements OnInit, OnDestroy {
   private renderOptimizedRoute(routeResult: any): void {
     if (!this.map || !routeResult) return;
 
-    // 1. Parse Polyline Coordinates
     let rawCoordinates: [number, number][] = [];
     try {
       let parsed = routeResult.encodedPolyline;
@@ -361,7 +373,6 @@ export class BookingWizardComponent implements OnInit, OnDestroy {
 
     if (routeCoordinates.length < 2) return;
 
-    // 2. Render Waypoint Markers
     const totalWaypoints = waypoints.length;
     let pickupCounter = 1;
 
@@ -377,66 +388,20 @@ export class BookingWizardComponent implements OnInit, OnDestroy {
 
       if (idx === 0) {
         el.innerHTML = `
-          <div style="
-            background-color: #198754;
-            color: white;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 12px;
-            white-space: nowrap;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-            border: 2px solid white;
-            margin-bottom: 2px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-          ">
+          <div style="background-color: #198754; color: white; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 12px; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.3); border: 2px solid white; margin-bottom: 2px; display: flex; align-items: center; gap: 4px;">
             <span>🏢</span>
             <span>Office</span>
           </div>
-          <div style="
-            background-color: #198754;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-          "></div>
+          <div style="background-color: #198754; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.4);"></div>
         `;
       } else if (idx === totalWaypoints - 1) {
         el.innerHTML = `
-          <div style="
-            background-color: #D2232A;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            border: 3px solid white;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 11px;
-          ">🏁</div>
+          <div style="background-color: #D2232A; width: 22px; height: 22px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; color: white; font-size: 11px;">🏁</div>
         `;
       } else {
         const currentNumber = pickupCounter++;
         el.innerHTML = `
-          <div style="
-            background-color: #0d6efd;
-            color: white;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-          ">${currentNumber}</div>
+          <div style="background-color: #0d6efd; color: white; width: 24px; height: 24px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">${currentNumber}</div>
         `;
       }
 
@@ -445,7 +410,6 @@ export class BookingWizardComponent implements OnInit, OnDestroy {
         .addTo(this.map!);
     });
 
-    // 3. Create Custom SVG Route Overlay
     const container = this.map.getCanvasContainer();
     let svg = container.querySelector('#map-route-svg') as SVGSVGElement;
 
@@ -464,13 +428,7 @@ export class BookingWizardComponent implements OnInit, OnDestroy {
 
     svg.innerHTML = `
       <defs>
-        <marker id="route-arrow" 
-                viewBox="0 0 10 10" 
-                refX="5" 
-                refY="5" 
-                markerWidth="6" 
-                markerHeight="6" 
-                orient="auto-start-reverse">
+        <marker id="route-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
           <path d="M 0 1 L 10 5 L 0 9 z" fill="#FFFFFF" />
         </marker>
       </defs>
@@ -536,24 +494,12 @@ export class BookingWizardComponent implements OnInit, OnDestroy {
 
     updateSvgPath();
 
-    // 4. Fit Map Bounds
     const bounds = routeCoordinates.reduce(
       (b, coord) => b.extend(coord),
       new maplibregl.LngLatBounds(routeCoordinates[0], routeCoordinates[0])
     );
 
     this.map.fitBounds(bounds, { padding: 70 });
-  }
-
-  get selectedPkg(): PackageOption {
-    const pkgId = Number(this.serviceForm.get('selectedPackageId')?.value);
-    return this.packages.find(p => p.id === pkgId) || this.packages[1];
-  }
-
-  get calculatedTotal(): number {
-    const hours = this.serviceForm.get('estimatedHours')?.value || 1;
-    const cleaningExtra = this.serviceForm.get('includeCleaning')?.value ? 110 : 0;
-    return (this.selectedPkg.ratePerHour * hours) + cleaningExtra;
   }
 
   private mapToAddressDto(groupValue: any): AddressDto {
@@ -570,7 +516,6 @@ export class BookingWizardComponent implements OnInit, OnDestroy {
     };
   }
 
-  // --- Step 1 & 2 Execution ---
   submitBooking(event?: Event): void {
     if (event) {
       event.preventDefault();
@@ -601,14 +546,12 @@ export class BookingWizardComponent implements OnInit, OnDestroy {
         totalPrice: this.calculatedTotal
       };
 
-      // 1. Instant POST call to create booking
       this.bookingService.createBooking(payload).subscribe({
         next: (createRes: any) => {
           this.isSubmitted = true;
           this.isLoading = false;
           this.isMapLoading = true;
 
-          // 2. GET call to load complete details & routeResultDto
           const bookingId = createRes.bookingId || createRes.id;
           this.fetchBookingDetails(bookingId);
         },

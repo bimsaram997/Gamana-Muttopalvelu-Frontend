@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 
@@ -19,6 +19,10 @@ import { AddressLookupService } from '../../../services/address-lookup.service';
 import { AddressDto, CreateOfferPayload } from '../../../models/dto';
 import { OfferService } from '../../../services/offer.service';
 import { Router } from '@angular/router';
+import { FormOptionService } from '../../../services/admin/form-option.service';
+import { FormOptionResponseDto } from '../../../models/admin.dto';
+import { Subscription } from 'rxjs';
+import { LanguageService } from '../../../services/language.service';
 
 @Component({
   selector: 'app-offer-request-wizard',
@@ -45,35 +49,60 @@ export class OfferRequestWizardComponent implements OnInit {
   departureForm!: FormGroup;
   destinationForm!: FormGroup;
   additionalInfoForm!: FormGroup;
-
+ private subs: Subscription[] = [];
   isSubmitted = false;
   isLoading = false;
   minDate = new Date();
 
   departureSuggestions: any[] = [];
   destinationSuggestions: any[] = [];
-
+  currentLanguage: string = 'en';
   // Services with numeric IDs
-  availableServices: any[] = [
-    { id: 1, label: 'Packing Service' },
-    { id: 2, label: 'Unpacking Service' },
-    { id: 3, label: 'Final Cleaning' },
-    { id: 4, label: 'Furniture Disassembly / Assembly' },
-    { id: 5, label: 'Temporary Storage' }
-  ];
+  availableServices: FormOptionResponseDto[] = [];
+    private langSub!: Subscription;
 
   constructor(
     private fb: FormBuilder,
     // private offerRequestService: OfferRequestService,
     private addressLookupService: AddressLookupService,
     private offerService: OfferService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef,
+    private formOptionService: FormOptionService,
+     public languageService: LanguageService, //
   ) {
     this.createForms();
   }
 
   ngOnInit(): void {
     this.setupAddressAutocomplete();
+     this.langSub = this.languageService.currentLanguage$.subscribe(lang => {
+      console.log('PricingPackagesComponent received new language:', lang);
+      this.currentLanguage = lang;
+      this.cdr.detectChanges(); // Force instant UI re-render
+    });
+    this.getAllFormOptionServices();
+  }
+
+    getAllFormOptionServices(): void {
+      const sub = this.formOptionService.getAll().subscribe(
+        (response: FormOptionResponseDto[]) => {
+          this.availableServices = response;
+          this.cdr.detectChanges();
+        }
+      );
+      this.subs.push(sub);
+    }
+
+       // Helper method for static hardcoded UI text
+  t(key: string): string {
+    return this.languageService.translate(key);
+  }
+  getTranslation<T extends { languageCode: string }>(translations: T[]): T | undefined {
+    if (!translations || translations.length === 0) return undefined;
+    
+    return translations.find(t => t.languageCode.toLowerCase() === this.currentLanguage.toLowerCase()) 
+        || translations[0];
   }
 
   private createForms(): void {
@@ -246,5 +275,11 @@ export class OfferRequestWizardComponent implements OnInit {
 
   goHome(): void {
     this.router.navigate(['/']);
+  }
+   ngOnDestroy(): void {
+    if (this.langSub) {
+      this.langSub.unsubscribe();
+    }
+    this.subs.forEach(sub => sub?.unsubscribe());
   }
 }
