@@ -71,7 +71,7 @@ export interface DetailedServiceResponseDto extends DetailedServiceUpsertDto {
 export interface FormOptionUpsertDto {
   displayOrder: number;
   isActive: boolean;
-  translations: { languageCode: string; label: string }[];
+  translations: { languageCode: string; name: string }[];
 }
 
 export interface FormOptionResponseDto extends FormOptionUpsertDto {
