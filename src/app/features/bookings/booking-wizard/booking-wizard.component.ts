@@ -25,6 +25,7 @@ import { AddressDto, CreateBookingPayload } from '../../../models/dto';
 import { PackageResponseDto } from '../../../models/admin.dto';
 import { PackageAdminService } from '../../../services/admin/package-admin.service';
 import { LanguageService } from '../../../services/language.service';
+import { PackageSkeletonComponent } from '../../../shared/package-skeleton/package-skeleton.component';
 
 @Component({
   selector: 'app-booking-wizard',
@@ -41,7 +42,8 @@ import { LanguageService } from '../../../services/language.service';
     MatIconModule,
     MatCheckboxModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    PackageSkeletonComponent
   ],
   providers: [MatStepperIntl],
   templateUrl: './booking-wizard.component.html',
@@ -66,7 +68,7 @@ export class BookingWizardComponent implements OnInit, OnDestroy {
   packages: PackageResponseDto[] = [];
   currentLanguage: string = 'en';
   private subs: Subscription[] = [];
-
+packagesLoading: boolean = false;
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -102,6 +104,7 @@ export class BookingWizardComponent implements OnInit, OnDestroy {
   }
 
   getAllPackages(): void {
+    this.packagesLoading = true;
     const sub = this.packageAdminService.getAll().subscribe({
       next: (response: PackageResponseDto[]) => {
         this.packages = (response || [])
@@ -113,9 +116,14 @@ export class BookingWizardComponent implements OnInit, OnDestroy {
         }
 
         this.cdr.detectChanges();
+        this.packagesLoading = false;
       },
-      error: (err) => console.error('Error fetching packages:', err)
-    });
+       error: (err) => {
+      console.error('Error fetching packages:', err);
+      this.packagesLoading = false;
+      this.cdr.detectChanges();
+    }
+  });
     this.subs.push(sub);
   }
 

@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { LanguageService } from '../../../../services/language.service';
 import { KeyServicesAdminService } from '../../../../services/admin/key-services-admin.service';
 import { SimpleServiceResponseDto } from '../../../../models/admin.dto';
+import { PageLoadingService } from '../../../../services/page-loading.service';
 
 @Component({
   selector: 'app-hero-section',
@@ -22,39 +23,50 @@ export class HeroSectionComponent implements OnInit, OnDestroy {
 
 
   constructor(private router: Router,
-      public languageService: LanguageService, // Changed to public so template can read it
-        private cdr: ChangeDetectorRef,
-        private keyServicesAdminService: KeyServicesAdminService
+    public languageService: LanguageService, // Changed to public so template can read it
+    private cdr: ChangeDetectorRef,
+    private keyServicesAdminService: KeyServicesAdminService,
+    private pageLoadingService: PageLoadingService,
+    
   ) { }
 
   ngOnInit(): void {
     this.langSub = this.languageService.currentLanguage$.subscribe(lang => {
-      console.log('PricingPackagesComponent received new language:', lang);
       this.currentLanguage = lang;
       this.cdr.detectChanges(); // Force instant UI re-render
     });
     this.getAllKeyServices();
   }
 
-  getAllKeyServices(): void {
-    const sub = this.keyServicesAdminService.getAll().subscribe(
-      (response: any) => {
-        this.keyServices = response;
-        this.cdr.detectChanges();
-      }
-    );
-    this.subs.push(sub);
-  }
+getAllKeyServices(): void {
+  this.pageLoadingService.setHeroLoaded(false);
 
-    // Helper method for static hardcoded UI text
+  const sub = this.keyServicesAdminService.getAll().subscribe({
+    next: (response: any) => {
+      this.keyServices = response;
+
+      this.pageLoadingService.setHeroLoaded(true);
+
+      this.cdr.detectChanges();
+    },
+    error: (err) => {
+      console.error('Error loading key services:', err);
+      this.pageLoadingService.setHeroLoaded(true);
+    }
+  });
+
+  this.subs.push(sub);
+}
+
+  // Helper method for static hardcoded UI text
   t(key: string): string {
     return this.languageService.translate(key);
   }
   getTranslation<T extends { languageCode: string }>(translations: T[]): T | undefined {
     if (!translations || translations.length === 0) return undefined;
-    
-    return translations.find(t => t.languageCode.toLowerCase() === this.currentLanguage.toLowerCase()) 
-        || translations[0];
+
+    return translations.find(t => t.languageCode.toLowerCase() === this.currentLanguage.toLowerCase())
+      || translations[0];
   }
 
 
@@ -66,7 +78,7 @@ export class HeroSectionComponent implements OnInit, OnDestroy {
     this.router.navigate(['/offer']);
   }
 
-   ngOnDestroy(): void {
+  ngOnDestroy(): void {
     if (this.langSub) {
       this.langSub.unsubscribe();
     }
