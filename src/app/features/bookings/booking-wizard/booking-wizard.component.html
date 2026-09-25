@@ -1,17 +1,24 @@
 <div class="container my-4 booking-page">
   <mat-stepper #stepper linear="true">
-    
+
     <!-- Step 1: Package Selection -->
     <mat-step [stepControl]="serviceForm">
       <form [formGroup]="serviceForm">
         <ng-template matStepLabel>{{ t('booking.steps.service') }}</ng-template>
         <h3 class="fw-black mb-3">{{ t('booking.packageSection.title') }}</h3>
         <p class="text-muted">{{ t('booking.packageSection.subtitle') }}</p>
-        
+
         <div class="row g-3">
-          <div class="col-md-4" *ngFor="let pkg of packages">
-            <div 
-              class="card option-card cursor-pointer p-3 h-100"
+          <ng-container *ngIf="packagesLoading">
+            <div class="col-12 col-md-6 col-lg-4" *ngFor="let item of [1, 2, 3]">
+
+              <app-package-skeleton></app-package-skeleton>
+
+            </div>
+          </ng-container>
+            <ng-container *ngIf="!packagesLoading">
+               <div class="col-md-4" *ngFor="let pkg of packages">
+            <div class="card option-card cursor-pointer p-3 h-100"
               [class.border-gamana-red]="serviceForm.get('selectedPackageId')?.value === pkg.id"
               (click)="serviceForm.patchValue({ selectedPackageId: pkg.id })">
               <div class="d-flex justify-content-between align-items-center mb-2">
@@ -24,17 +31,19 @@
                 {{ getTranslation(pkg.translations)?.description }}
               </p>
               <h4 class="text-gamana-red fw-bold">
-                {{ getTranslation(pkg.translations)?.priceDisplay || ('€' + pkg.ratePerHour) }} 
+                {{ getTranslation(pkg.translations)?.priceDisplay || ('€' + pkg.ratePerHour) }}
                 <small class="fs-8 text-muted">/ {{ getTranslation(pkg.translations)?.unit || 'h' }}</small>
               </h4>
               <ul class="list-unstyled fs-7 mt-2" *ngIf="pkg.features?.length">
                 <li *ngFor="let feat of pkg.features">
-                  <mat-icon class="text-success fs-6">check</mat-icon> 
+                  <mat-icon class="text-success fs-6">check</mat-icon>
                   {{ getTranslation(feat.translations)?.text }}
                 </li>
               </ul>
             </div>
           </div>
+            </ng-container>
+         
         </div>
 
         <div class="row mt-4">
@@ -45,7 +54,8 @@
             </mat-form-field>
           </div>
           <div class="col-md-6 d-flex align-items-center">
-            <mat-checkbox formControlName="includeCleaning">{{ t('booking.packageSection.includeCleaning') }}</mat-checkbox>
+            <mat-checkbox formControlName="includeCleaning">{{ t('booking.packageSection.includeCleaning')
+              }}</mat-checkbox>
           </div>
         </div>
 
@@ -63,10 +73,12 @@
         <div class="row g-4 mt-1 justify-content-center">
           <div class="col-lg-8">
             <div formArrayName="pickupLocations">
-              <div *ngFor="let pickup of pickupLocations.controls; let i = index" [formGroupName]="i" class="card p-3 mb-3">
+              <div *ngFor="let pickup of pickupLocations.controls; let i = index" [formGroupName]="i"
+                class="card p-3 mb-3">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                   <strong class="text-dark">{{ t('booking.addressSection.pickup') }} #{{ i + 1 }}</strong>
-                  <button mat-icon-button color="warn" type="button" *ngIf="pickupLocations.length > 1" (click)="removePickupLocation(i)">
+                  <button mat-icon-button color="warn" type="button" *ngIf="pickupLocations.length > 1"
+                    (click)="removePickupLocation(i)">
                     <mat-icon>delete</mat-icon>
                   </button>
                 </div>
@@ -74,10 +86,12 @@
                 <mat-form-field appearance="outline" class="w-100">
                   <mat-label>{{ t('booking.addressSection.searchAddress') }}</mat-label>
                   <input matInput formControlName="searchQuery" [matAutocomplete]="autoPickup">
-                  <button mat-icon-button matSuffix type="button" (click)="clearAddress(pickup, i)" *ngIf="pickup.get('searchQuery')?.value">
+                  <button mat-icon-button matSuffix type="button" (click)="clearAddress(pickup, i)"
+                    *ngIf="pickup.get('searchQuery')?.value">
                     <mat-icon>clear</mat-icon>
                   </button>
-                  <mat-autocomplete #autoPickup="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onAddressSelected($event, pickup)">
+                  <mat-autocomplete #autoPickup="matAutocomplete" [displayWith]="displayFn"
+                    (optionSelected)="onAddressSelected($event, pickup)">
                     <mat-option *ngFor="let suggestion of pickupSuggestions[i]" [value]="suggestion">
                       {{ getLabel(suggestion) }}
                     </mat-option>
@@ -92,7 +106,8 @@
                     </mat-form-field>
                   </div>
                   <div class="col-6 d-flex align-items-center">
-                    <mat-checkbox formControlName="hasElevator">{{ t('booking.addressSection.hasElevator') }}</mat-checkbox>
+                    <mat-checkbox formControlName="hasElevator">{{ t('booking.addressSection.hasElevator')
+                      }}</mat-checkbox>
                   </div>
                 </div>
               </div>
@@ -107,10 +122,13 @@
               <mat-form-field appearance="outline" class="w-100">
                 <mat-label>{{ t('booking.addressSection.searchAddress') }}</mat-label>
                 <input matInput formControlName="searchQuery" [matAutocomplete]="autoDelivery">
-                <button mat-icon-button matSuffix type="button" (click)="clearAddress(detailsForm.get('deliveryLocation'))" *ngIf="detailsForm.get('deliveryLocation.searchQuery')?.value">
+                <button mat-icon-button matSuffix type="button"
+                  (click)="clearAddress(detailsForm.get('deliveryLocation'))"
+                  *ngIf="detailsForm.get('deliveryLocation.searchQuery')?.value">
                   <mat-icon>clear</mat-icon>
                 </button>
-                <mat-autocomplete #autoDelivery="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onAddressSelected($event, detailsForm.get('deliveryLocation'))">
+                <mat-autocomplete #autoDelivery="matAutocomplete" [displayWith]="displayFn"
+                  (optionSelected)="onAddressSelected($event, detailsForm.get('deliveryLocation'))">
                   <mat-option *ngFor="let suggestion of deliverySuggestions" [value]="suggestion">
                     {{ getLabel(suggestion) }}
                   </mat-option>
@@ -125,7 +143,8 @@
                   </mat-form-field>
                 </div>
                 <div class="col-6 d-flex align-items-center">
-                  <mat-checkbox formControlName="hasElevator">{{ t('booking.addressSection.hasElevator') }}</mat-checkbox>
+                  <mat-checkbox formControlName="hasElevator">{{ t('booking.addressSection.hasElevator')
+                    }}</mat-checkbox>
                 </div>
               </div>
             </div>
@@ -199,72 +218,81 @@
         </div>
 
         <!-- Confirmation Card -->
-   <div class="card border-success p-4 my-3" *ngIf="isSubmitted && bookingResponse">
-  <div class="d-flex align-items-center mb-3">
-    <mat-icon class="text-success me-2 fs-2">check_circle</mat-icon>
-    <h4 class="mb-0 text-success fw-bold">{{ t('booking.confirmation.title') }}</h4>
-  </div>
+        <div class="card border-success p-4 my-3" *ngIf="isSubmitted && bookingResponse">
+          <div class="d-flex align-items-center mb-3">
+            <mat-icon class="text-success me-2 fs-2">check_circle</mat-icon>
+            <h4 class="mb-0 text-success fw-bold">{{ t('booking.confirmation.title') }}</h4>
+          </div>
 
-  <p>{{ t('booking.confirmation.id') }}: <strong>{{ bookingResponse.id || bookingResponse.bookingId }}</strong></p>
-  <p>{{ t('booking.confirmation.customer') }}: <strong>{{ bookingResponse.fullName }}</strong> ({{ bookingResponse.email }})</p>
-  <p>{{ t('booking.confirmation.status') }}: <span class="badge bg-success">{{ bookingResponse.status || 'CONFIRMED' }}</span></p>
+          <p>{{ t('booking.confirmation.id') }}: <strong>{{ bookingResponse.id || bookingResponse.bookingId }}</strong>
+          </p>
+          <p>{{ t('booking.confirmation.customer') }}: <strong>{{ bookingResponse.fullName }}</strong> ({{
+            bookingResponse.email }})</p>
+          <p>{{ t('booking.confirmation.status') }}: <span class="badge bg-success">{{ bookingResponse.status ||
+              'CONFIRMED' }}</span></p>
 
-  <!-- Route Metrics -->
-  <div class="card bg-dark text-white p-3 mt-3 shadow-sm" *ngIf="bookingResponse.routeResultDto">
-    <h6 class="text-uppercase text-light fs-8 mb-3">{{ t('booking.confirmation.optimizedRouteCalculations') }}</h6>
-    <div class="d-flex justify-content-around text-center">
-      <div>
-        <small class="text-light fs-8">{{ t('booking.confirmation.totalDistance') }}</small>
-        <h4 class="mb-0 fw-bold text-danger">{{ bookingResponse.routeResultDto.totalDistanceKm }} km</h4>
-      </div>
-      <div class="border-end border-secondary"></div>
-      <div>
-        <small class="text-light fs-8">{{ t('booking.confirmation.estDrivingTime') }}</small>
-        <h4 class="mb-0 fw-bold text-danger">{{ bookingResponse.routeResultDto.totalDurationMinutes }} {{ t('booking.confirmation.mins') }}</h4>
-      </div>
-    </div>
+          <!-- Route Metrics -->
+          <div class="card bg-dark text-white p-3 mt-3 shadow-sm" *ngIf="bookingResponse.routeResultDto">
+            <h6 class="text-uppercase text-light fs-8 mb-3">{{ t('booking.confirmation.optimizedRouteCalculations') }}
+            </h6>
+            <div class="d-flex justify-content-around text-center">
+              <div>
+                <small class="text-light fs-8">{{ t('booking.confirmation.totalDistance') }}</small>
+                <h4 class="mb-0 fw-bold text-danger">{{ bookingResponse.routeResultDto.totalDistanceKm }} km</h4>
+              </div>
+              <div class="border-end border-secondary"></div>
+              <div>
+                <small class="text-light fs-8">{{ t('booking.confirmation.estDrivingTime') }}</small>
+                <h4 class="mb-0 fw-bold text-danger">{{ bookingResponse.routeResultDto.totalDurationMinutes }} {{
+                  t('booking.confirmation.mins') }}</h4>
+              </div>
+            </div>
 
-    <hr class="border-secondary my-2">
+            <hr class="border-secondary my-2">
 
-    <!-- Optimal Path Sequence -->
-    <div *ngIf="bookingResponse.routeResultDto.optimizedWaypoints?.length">
-      <small class="text-light fs-8 d-block mb-2 text-uppercase">{{ t('booking.confirmation.optimalPath') }}</small>
-      <div class="d-flex align-items-center flex-wrap gap-2 fs-7">
-        <ng-container *ngFor="let wp of bookingResponse.routeResultDto.optimizedWaypoints; let i = index; let isLast = last">
-          
-          <!-- Office (Start) -->
-          <span *ngIf="i === 0" class="badge bg-success d-inline-flex align-items-center gap-1">
-            🏢 {{ t('booking.map.office') }}
-          </span>
+            <!-- Optimal Path Sequence -->
+            <div *ngIf="bookingResponse.routeResultDto.optimizedWaypoints?.length">
+              <small class="text-light fs-8 d-block mb-2 text-uppercase">{{ t('booking.confirmation.optimalPath')
+                }}</small>
+              <div class="d-flex align-items-center flex-wrap gap-2 fs-7">
+                <ng-container
+                  *ngFor="let wp of bookingResponse.routeResultDto.optimizedWaypoints; let i = index; let isLast = last">
 
-          <!-- Delivery Point (End) -->
-          <span *ngIf="isLast" class="badge bg-danger d-inline-flex align-items-center gap-1">
-            🏁 {{ t('booking.confirmation.deliveryPoint') }}
-          </span>
+                  <!-- Office (Start) -->
+                  <span *ngIf="i === 0" class="badge bg-success d-inline-flex align-items-center gap-1">
+                    🏢 {{ t('booking.map.office') }}
+                  </span>
 
-          <!-- Pickup Points (Numbered) -->
-          <span *ngIf="i > 0 && !isLast" class="badge bg-primary d-inline-flex align-items-center gap-1">
-            📍 {{ t('booking.confirmation.pickup') }} #{{ i }}
-          </span>
+                  <!-- Delivery Point (End) -->
+                  <span *ngIf="isLast" class="badge bg-danger d-inline-flex align-items-center gap-1">
+                    🏁 {{ t('booking.confirmation.deliveryPoint') }}
+                  </span>
 
-          <span class="text-light text-truncate" [title]="wp.address || wp.label || wp.street">
-            {{ wp.address || wp.label || (wp.street ? (wp.street + ' ' + (wp.houseNumber || '')) : t('booking.confirmation.addressUnavailable')) }}
-          </span>
+                  <!-- Pickup Points (Numbered) -->
+                  <span *ngIf="i > 0 && !isLast" class="badge bg-primary d-inline-flex align-items-center gap-1">
+                    📍 {{ t('booking.confirmation.pickup') }} #{{ i }}
+                  </span>
 
-          <!-- Arrow Separator -->
-          <mat-icon *ngIf="!isLast" class="text-secondary fs-6 d-flex align-items-center">arrow_forward</mat-icon>
+                  <span class="text-light text-truncate" [title]="wp.address || wp.label || wp.street">
+                    {{ wp.address || wp.label || (wp.street ? (wp.street + ' ' + (wp.houseNumber || '')) :
+                    t('booking.confirmation.addressUnavailable')) }}
+                  </span>
 
-        </ng-container>
-      </div>
-    </div>
-  </div>
+                  <!-- Arrow Separator -->
+                  <mat-icon *ngIf="!isLast"
+                    class="text-secondary fs-6 d-flex align-items-center">arrow_forward</mat-icon>
 
-  <!-- MapLibre Map Container -->
-  <div class="mt-4" *ngIf="bookingResponse.routeResultDto">
-    <h6 class="fw-bold mb-2">{{ t('booking.confirmation.routeMap') }}</h6>
-    <div id="confirmation-map" style="height: 380px; width: 100%;" class="rounded border shadow-sm"></div>
-  </div>
-</div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+
+          <!-- MapLibre Map Container -->
+          <div class="mt-4" *ngIf="bookingResponse.routeResultDto">
+            <h6 class="fw-bold mb-2">{{ t('booking.confirmation.routeMap') }}</h6>
+            <div id="confirmation-map" style="height: 380px; width: 100%;" class="rounded border shadow-sm"></div>
+          </div>
+        </div>
 
 
 

@@ -1,0 +1,222 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.package-skeleton-card {
+  width: 100%;
+  min-height: 100%;
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 0.375rem;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* =========================
+   Header
+   ========================= */
+
+.skeleton-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.skeleton-title {
+  width: 55%;
+  height: 1.35rem;
+}
+
+.skeleton-badge {
+  width: 4rem;
+  height: 1.35rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* =========================
+   Skeleton base
+   ========================= */
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: #e9ecef;
+  border-radius: 0.375rem;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.7) 50%,
+    transparent 100%
+  );
+
+  transform: translateX(-100%);
+  animation: skeleton-shimmer 1.4s infinite;
+}
+
+@keyframes skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* =========================
+   Description
+   ========================= */
+
+.skeleton-line {
+  height: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.skeleton-full {
+  width: 100%;
+}
+
+.skeleton-medium {
+  width: 82%;
+}
+
+.skeleton-short {
+  width: 58%;
+}
+
+/* =========================
+   Price
+   ========================= */
+
+.skeleton-price {
+  width: 35%;
+  height: 1.75rem;
+  margin-top: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+/* =========================
+   Features
+   ========================= */
+
+.skeleton-feature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  margin-bottom: 0.75rem;
+}
+
+.skeleton-check {
+  width: 1rem;
+  height: 1rem;
+  min-width: 1rem;
+  border-radius: 50%;
+}
+
+.skeleton-feature-text {
+  height: 0.75rem;
+}
+
+.skeleton-feature-large {
+  width: 85%;
+}
+
+.skeleton-feature-medium {
+  width: 70%;
+}
+
+.skeleton-feature-small {
+  width: 55%;
+}
+
+/* =========================
+   Tablet
+   ========================= */
+
+@media (max-width: 991.98px) {
+  .package-skeleton-card {
+    padding: 0.9rem;
+  }
+
+  .skeleton-title {
+    width: 60%;
+  }
+
+  .skeleton-price {
+    width: 40%;
+  }
+}
+
+/* =========================
+   Mobile
+   ========================= */
+
+@media (max-width: 575.98px) {
+  .package-skeleton-card {
+    padding: 1rem;
+    border-radius: 0.5rem;
+  }
+
+  .skeleton-header {
+    gap: 0.5rem;
+  }
+
+  .skeleton-title {
+    width: 60%;
+    height: 1.25rem;
+  }
+
+  .skeleton-badge {
+    width: 3.5rem;
+    height: 1.25rem;
+  }
+
+  .skeleton-line {
+    height: 0.7rem;
+  }
+
+  .skeleton-price {
+    width: 42%;
+    height: 1.6rem;
+  }
+
+  .skeleton-feature {
+    gap: 0.5rem;
+  }
+
+  .skeleton-feature-text {
+    max-width: calc(100% - 1.5rem);
+  }
+}
+
+/* =========================
+   Very small phones
+   ========================= */
+
+@media (max-width: 360px) {
+  .package-skeleton-card {
+    padding: 0.75rem;
+  }
+
+  .skeleton-title {
+    width: 55%;
+  }
+
+  .skeleton-badge {
+    width: 3rem;
+  }
+
+  .skeleton-price {
+    width: 45%;
+  }
+}

@@ -1,8 +1,36 @@
-<main>
-  <app-hero-section></app-hero-section>
-  <app-how-it-works appAnimateOnScroll></app-how-it-works>
-  <app-service-section appAnimateOnScroll class="fade-left"></app-service-section>
-  <app-pricing-packages appAnimateOnScroll class="zoom-in"></app-pricing-packages>
-  <app-testimonials appAnimateOnScroll></app-testimonials>
-  <app-footer></app-footer>
+<main >
+
+  <!-- Real homepage content -->
+  <div
+    class="home-content"
+    [class.home-content-hidden]="pageLoading$ | async"
+  >
+    <app-hero-section></app-hero-section>
+
+    <app-how-it-works
+      appAnimateOnScroll>
+    </app-how-it-works>
+
+    <app-service-section
+      appAnimateOnScroll
+      class="fade-left">
+    </app-service-section>
+
+    <app-pricing-packages
+      appAnimateOnScroll
+      class="zoom-in">
+    </app-pricing-packages>
+
+    <app-testimonials
+      appAnimateOnScroll>
+    </app-testimonials>
+
+    <app-footer></app-footer>
+  </div>
+
+  <!-- Full homepage skeleton -->
+  @if (pageLoading$ | async) {
+    <app-home-page-skeleton></app-home-page-skeleton>
+  }
+
 </main>

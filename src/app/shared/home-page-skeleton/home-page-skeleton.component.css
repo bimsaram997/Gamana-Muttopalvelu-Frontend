@@ -1,0 +1,516 @@
+/* =========================
+   BASE
+========================= */
+
+.home-skeleton {
+  width: 100%;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #e9ecef;
+  border-radius: 6px;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  transform: translateX(-100%);
+
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.7) 50%,
+    transparent 100%
+  );
+
+  animation: skeleton-shimmer 1.5s infinite;
+}
+
+@keyframes skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero-skeleton {
+  min-height: 620px;
+
+  padding: 100px 8%;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+
+  gap: 60px;
+}
+
+.hero-skeleton-content {
+  max-width: 650px;
+}
+
+.skeleton-small-label {
+  width: 130px;
+  height: 18px;
+  margin-bottom: 25px;
+}
+
+.skeleton-hero-title {
+  width: 90%;
+  height: 55px;
+  margin-bottom: 12px;
+}
+
+.skeleton-hero-title.second {
+  width: 70%;
+}
+
+.skeleton-hero-text {
+  width: 85%;
+  height: 17px;
+  margin-top: 25px;
+}
+
+.skeleton-hero-text.short {
+  width: 65%;
+  margin-top: 10px;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 35px;
+}
+
+.skeleton-button {
+  width: 150px;
+  height: 48px;
+  border-radius: 8px;
+}
+
+.skeleton-button.secondary {
+  width: 130px;
+}
+
+.skeleton-hero-image {
+  width: 100%;
+  height: 400px;
+  border-radius: 20px;
+}
+
+
+/* =========================
+   SECTION
+========================= */
+
+.skeleton-section {
+  padding: 100px 8%;
+}
+
+.section-heading {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 60px;
+}
+
+.skeleton-subtitle {
+  width: 120px;
+  height: 18px;
+  margin: 0 auto 20px;
+}
+
+.skeleton-section-title {
+  width: 320px;
+  height: 38px;
+  margin: 0 auto 25px;
+}
+
+.skeleton-description {
+  width: 90%;
+  height: 16px;
+  margin: 0 auto 10px;
+}
+
+.skeleton-description.short {
+  width: 65%;
+}
+
+
+/* =========================
+   HOW IT WORKS
+========================= */
+
+.how-it-works-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.skeleton-info-card {
+  padding: 35px;
+  border-radius: 15px;
+  background: #f8f9fa;
+  text-align: center;
+}
+
+.skeleton-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  margin: 0 auto 25px;
+}
+
+.skeleton-card-title {
+  width: 65%;
+  height: 24px;
+  margin: 0 auto 25px;
+}
+
+.skeleton-card-text {
+  width: 90%;
+  height: 14px;
+  margin: 0 auto 10px;
+}
+
+.skeleton-card-text.short {
+  width: 60%;
+}
+
+
+/* =========================
+   SERVICES
+========================= */
+
+.services-section {
+  background: #f8f9fa;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.service-skeleton-card {
+  overflow: hidden;
+  border-radius: 15px;
+  background: #ffffff;
+}
+
+.skeleton-service-image {
+  width: 100%;
+  height: 230px;
+  border-radius: 0;
+}
+
+.service-card-content {
+  padding: 25px;
+}
+
+.service-card-content .skeleton-card-title {
+  width: 60%;
+  margin: 0 0 25px;
+}
+
+.service-card-content .skeleton-card-text {
+  margin-left: 0;
+}
+
+.skeleton-read-more {
+  width: 110px;
+  height: 18px;
+  margin-top: 25px;
+}
+
+
+/* =========================
+   PRICING
+========================= */
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.pricing-skeleton-card {
+  padding: 35px;
+  border-radius: 15px;
+  background: #f8f9fa;
+}
+
+.skeleton-plan-title {
+  width: 50%;
+  height: 25px;
+  margin-bottom: 25px;
+}
+
+.skeleton-price {
+  width: 45%;
+  height: 45px;
+  margin-bottom: 10px;
+}
+
+.skeleton-price-period {
+  width: 35%;
+  height: 15px;
+  margin-bottom: 35px;
+}
+
+.pricing-features {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.skeleton-feature {
+  width: 90%;
+  height: 16px;
+}
+
+.skeleton-pricing-button {
+  width: 100%;
+  height: 48px;
+  margin-top: 35px;
+  border-radius: 8px;
+}
+
+
+/* =========================
+   TESTIMONIALS
+========================= */
+
+.testimonials-section {
+  background: #f8f9fa;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.testimonial-skeleton-card {
+  padding: 30px;
+  border-radius: 15px;
+  background: #ffffff;
+}
+
+.testimonial-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.skeleton-avatar {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.testimonial-user {
+  flex: 1;
+}
+
+.skeleton-user-name {
+  width: 60%;
+  height: 18px;
+  margin-bottom: 10px;
+}
+
+.skeleton-user-role {
+  width: 40%;
+  height: 13px;
+}
+
+.testimonial-rating {
+  display: flex;
+  gap: 6px;
+  margin: 25px 0;
+}
+
+.skeleton-star {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+}
+
+.skeleton-review-text {
+  width: 95%;
+  height: 15px;
+  margin-bottom: 10px;
+}
+
+.skeleton-review-text.short {
+  width: 65%;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer-skeleton {
+  padding: 70px 8%;
+  background: #f1f3f5;
+}
+
+.footer-columns {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 50px;
+}
+
+.skeleton-footer-logo {
+  width: 150px;
+  height: 35px;
+  margin-bottom: 25px;
+}
+
+.skeleton-footer-text {
+  width: 90%;
+  height: 14px;
+  margin-bottom: 10px;
+}
+
+.skeleton-footer-text.short {
+  width: 60%;
+}
+
+.skeleton-footer-title {
+  width: 100px;
+  height: 20px;
+  margin-bottom: 25px;
+}
+
+.skeleton-footer-link {
+  width: 110px;
+  height: 14px;
+  margin-bottom: 15px;
+}
+
+
+/* =========================
+   HIDE REAL CONTENT
+========================= */
+
+.home-content-hidden {
+  visibility: hidden;
+  height: 0;
+  overflow: hidden;
+}
+
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 992px) {
+
+  .hero-skeleton {
+    grid-template-columns: 1fr;
+    padding: 80px 6%;
+  }
+
+  .skeleton-hero-image {
+    height: 300px;
+  }
+
+  .how-it-works-grid,
+  .services-grid,
+  .pricing-grid,
+  .testimonials-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .footer-columns {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 576px) {
+
+  .hero-skeleton {
+    min-height: 600px;
+    padding: 60px 5%;
+    gap: 40px;
+  }
+
+  .skeleton-hero-title {
+    width: 100%;
+    height: 42px;
+  }
+
+  .skeleton-hero-title.second {
+    width: 80%;
+  }
+
+  .skeleton-hero-text {
+    width: 100%;
+  }
+
+  .skeleton-hero-text.short {
+    width: 75%;
+  }
+
+  .skeleton-hero-image {
+    height: 230px;
+  }
+
+  .hero-buttons {
+    flex-wrap: wrap;
+  }
+
+  .skeleton-section {
+    padding: 70px 5%;
+  }
+
+  .skeleton-section-title {
+    width: 230px;
+  }
+
+  .how-it-works-grid,
+  .services-grid,
+  .pricing-grid,
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .skeleton-info-card,
+  .pricing-skeleton-card,
+  .testimonial-skeleton-card {
+    padding: 25px;
+  }
+
+  .footer-skeleton {
+    padding: 60px 5%;
+  }
+
+  .footer-columns {
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+
+}
