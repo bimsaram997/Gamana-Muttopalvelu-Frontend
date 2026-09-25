@@ -5,6 +5,7 @@ import { ReviewAdminService } from '../../../../services/admin/review-admin.serv
 import { LanguageService } from '../../../../services/language.service';
 import { Router } from '@angular/router';
 import { ReviewResponseDto } from '../../../../models/admin.dto';
+import { PageLoadingService } from '../../../../services/page-loading.service';
 
 @Component({
   selector: 'app-testimonials',
@@ -24,7 +25,8 @@ export class TestimonialsComponent implements OnInit, OnDestroy {
   constructor(private router: Router,
     public languageService: LanguageService, // Changed to public so template can read it
     private cdr: ChangeDetectorRef,
-    private reviewAdminService: ReviewAdminService
+    private reviewAdminService: ReviewAdminService,
+    private pageLoadingService: PageLoadingService
   ) { }
 
   ngOnInit(): void {
@@ -37,16 +39,27 @@ export class TestimonialsComponent implements OnInit, OnDestroy {
     
   }
 
-  getAllReviews(): void {
-    const sub = this.reviewAdminService.getAll().subscribe(
-      (response: any) => {
-        this.reviews = response;
-        this.cdr.detectChanges();
-      }
-    );
-    this.subs.push(sub);
-  }
+ getAllReviews(): void {
+  this.pageLoadingService.setTestimonialsLoaded(false);
 
+  const sub = this.reviewAdminService.getAll().subscribe({
+    next: (response: any) => {
+      this.reviews = response;
+
+      this.pageLoadingService.setTestimonialsLoaded(true);
+
+      this.cdr.detectChanges();
+    },
+    error: (err) => {
+      console.error('Failed to load reviews:', err);
+
+      // Stop the skeleton even if the API fails
+      this.pageLoadingService.setTestimonialsLoaded(true);
+    }
+  });
+
+  this.subs.push(sub);
+}
     // Helper method for static hardcoded UI text
   t(key: string): string {
     return this.languageService.translate(key);

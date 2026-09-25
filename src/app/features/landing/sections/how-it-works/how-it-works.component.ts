@@ -5,6 +5,7 @@ import { ProcessStepResponseDto } from '../../../../models/admin.dto';
 import { Router } from '@angular/router';
 import { ProcessStepsAdminService } from '../../../../services/admin/process-steps-admin.service';
 import { LanguageService } from '../../../../services/language.service';
+import { PageLoadingService } from '../../../../services/page-loading.service';
 
 @Component({
   selector: 'app-how-it-works',
@@ -22,7 +23,8 @@ private subs: Subscription[] = [];
    constructor(private router: Router,
         public languageService: LanguageService, // Changed to public so template can read it
           private cdr: ChangeDetectorRef,
-          private processStepsAdminService: ProcessStepsAdminService
+          private processStepsAdminService: ProcessStepsAdminService,
+           private pageLoadingService: PageLoadingService
     ) { }
   
     ngOnInit(): void {
@@ -33,16 +35,27 @@ private subs: Subscription[] = [];
       });
       this.getAllSteps();
     }
-  
-    getAllSteps(): void {
-      const sub = this.processStepsAdminService.getAll().subscribe(
-        (response: any) => {
-          this.steps = response;
-          this.cdr.detectChanges();
-        }
-      );
-      this.subs.push(sub);
+getAllSteps(): void {
+  this.pageLoadingService.setHowItWorksLoaded(false);
+
+  const sub = this.processStepsAdminService.getAll().subscribe({
+    next: (response: any) => {
+      this.steps = response;
+
+      this.pageLoadingService.setHowItWorksLoaded(true);
+
+      this.cdr.detectChanges();
+    },
+    error: (err) => {
+      console.error('Error loading process steps:', err);
+
+      // Stop the skeleton even if the API fails
+      this.pageLoadingService.setHowItWorksLoaded(true);
     }
+  });
+
+  this.subs.push(sub);
+}
   
       // Helper method for static hardcoded UI text
     t(key: string): string {

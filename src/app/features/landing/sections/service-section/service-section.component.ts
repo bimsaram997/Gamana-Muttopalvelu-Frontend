@@ -5,6 +5,7 @@ import { LanguageService } from '../../../../services/language.service';
 import { DetailedServicesAdminService } from '../../../../services/admin/detailed-services-admin.service';
 import { DetailedServiceResponseDto } from '../../../../models/admin.dto';
 import { Subscription } from 'maplibre-gl';
+import { PageLoadingService } from '../../../../services/page-loading.service';
 
 @Component({
   selector: 'app-service-section',
@@ -22,7 +23,9 @@ export class ServiceSectionComponent implements OnInit, OnDestroy {
   constructor(public languageService: LanguageService,
     private detailedServicesAdminService: DetailedServicesAdminService,
     private router: Router,
-    private cdr: ChangeDetectorRef) { }
+    private cdr: ChangeDetectorRef,
+    private pageLoadingService: PageLoadingService) { }
+
  ngOnInit(): void {
     // 1. Subscribe to language changes from the Navbar
     const langSub = this.languageService.currentLanguage$.subscribe(lang => {
@@ -35,17 +38,27 @@ export class ServiceSectionComponent implements OnInit, OnDestroy {
     this.loadServices();
   }
 
-  loadServices(): void {
-    const apiSub = this.detailedServicesAdminService.getAll().subscribe({
-      next: (data: DetailedServiceResponseDto[]) => {
-        this.services = data;
-        this.cdr.detectChanges();
-      },
-      error: (err) => console.error('Failed to load services:', err)
-    });
-    this.subs.push(apiSub);
-  }
+loadServices(): void {
+  this.pageLoadingService.setServicesLoaded(false);
 
+  const apiSub = this.detailedServicesAdminService.getAll().subscribe({
+    next: (data: DetailedServiceResponseDto[]) => {
+      this.services = data;
+
+      this.pageLoadingService.setServicesLoaded(true);
+
+      this.cdr.detectChanges();
+    },
+    error: (err) => {
+      console.error('Failed to load services:', err);
+
+      // Stop the skeleton even if the API fails
+      this.pageLoadingService.setServicesLoaded(true);
+    }
+  });
+
+  this.subs.push(apiSub);
+}
   // Helper for hardcoded section static text
   t(key: string): string {
     return this.languageService.translate(key);
