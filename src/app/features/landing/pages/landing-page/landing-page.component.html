@@ -1,10 +1,7 @@
-<main >
+<main class="home-page">
 
-  <!-- Real homepage content -->
-  <div
-    class="home-content"
-    [class.home-content-hidden]="pageLoading$ | async"
-  >
+  <!-- Actual homepage -->
+  <div class="home-content">
     <app-hero-section></app-hero-section>
 
     <app-how-it-works
@@ -28,9 +25,12 @@
     <app-footer></app-footer>
   </div>
 
-  <!-- Full homepage skeleton -->
+
+  <!-- Skeleton -->
   @if (pageLoading$ | async) {
-    <app-home-page-skeleton></app-home-page-skeleton>
+    <div class="skeleton-overlay">
+      <app-home-page-skeleton></app-home-page-skeleton>
+    </div>
   }
 
 </main>
