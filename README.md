@@ -1,27 +1,68 @@
-# GamanaMuttopalveluFrontend
+# Gamana Muuttopalvelu - Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.1.
+The client-facing web application for **Gamana Muuttopalvelu** (`gamanamuutto.fi`), built with Angular. It provides an interactive moving cost calculator, service request forms, and localized route visualizations.
 
-## Development server
+---
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## 🛠️ Tech Stack & Libraries
 
-## Code scaffolding
+* **Framework:** Angular (Standalone Components)
+* **UI & Styling:** Angular Material, Bootstrap 5, Bootstrap Icons
+* **Maps & Routing:** Leaflet, Leaflet Routing Machine, MapLibre GL
+* **SEO & Crawling:** Canonical domain configurations, static `robots.txt`, and `sitemap.xml`
+* **Deployment:** Render
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+---
 
-## Build
+## 📁 Repository Structure
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```text
+gamana-frontend/
+├── public/                 # Root-served static assets (robots.txt, sitemap.xml)
+├── src/
+│   ├── app/                # Angular components, services, models, and guards
+│   ├── assets/             # Images, icons, and dynamic local assets
+│   ├── environments/       # Environment configurations (dev, prod)
+│   └── styles.css          # Global application styles
+├── angular.json            # Build options & static asset glob definitions
+└── package.json            # Dependencies and npm build scripts
+```
 
-## Running unit tests
+---
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## ⚡ Local Development Setup
 
-## Running end-to-end tests
+### Prerequisites
+* **Node.js**: `v18+` or `v20+`
+* **Angular CLI**: `npm install -g @angular/cli`
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+### Installation & Run
 
-## Further help
+1. Install project dependencies:
+   ```bash
+   npm install
+   ```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+2. Start the local development server:
+   ```bash
+   ng serve
+   ```
+
+3. Open your browser and navigate to `http://localhost:4200/`.
+
+---
+
+## 🚀 Production Build & Deployment
+
+To generate a production-ready build bundle:
+
+```bash
+ng build --configuration production
+```
+
+The compiled output files will be generated in `dist/gamana-muttopalvelu-frontend/browser`.
+
+### SEO Verification Rules
+Ensure the following static routes respond with raw content on production:
+* `https://gamanamuutto.fi/robots.txt`
+* `https://gamanamuutto.fi/sitemap.xml`
