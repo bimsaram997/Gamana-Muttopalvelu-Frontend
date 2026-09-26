@@ -101,3 +101,9 @@ mat-icon {
   min-height: 380px;
   overflow: hidden;
 }
+
+.btn-add{
+  background-color: #300c0e !important;
+  color: #FFFFFF !important;
+  transition: all 0.2s ease;
+}
