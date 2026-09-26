@@ -14,61 +14,66 @@ import { PageLoadingService } from '../../../../services/page-loading.service';
   templateUrl: './how-it-works.component.html',
   styleUrl: './how-it-works.component.css'
 })
-export class HowItWorksComponent implements OnInit, OnDestroy{
-private subs: Subscription[] = [];
+export class HowItWorksComponent implements OnInit, OnDestroy {
+  private subs: Subscription[] = [];
   currentLanguage: string = 'en';
   private langSub!: Subscription;
   steps: ProcessStepResponseDto[] = [];
 
-   constructor(private router: Router,
-        public languageService: LanguageService, // Changed to public so template can read it
-          private cdr: ChangeDetectorRef,
-          private processStepsAdminService: ProcessStepsAdminService,
-           private pageLoadingService: PageLoadingService
-    ) { }
-  
-    ngOnInit(): void {
-      this.langSub = this.languageService.currentLanguage$.subscribe(lang => {
-        console.log('PricingPackagesComponent received new language:', lang);
-        this.currentLanguage = lang;
-        this.cdr.detectChanges(); // Force instant UI re-render
-      });
-      this.getAllSteps();
-    }
-getAllSteps(): void {
-  this.pageLoadingService.setHowItWorksLoaded(false);
+  constructor(private router: Router,
+    public languageService: LanguageService, // Changed to public so template can read it
+    private cdr: ChangeDetectorRef,
+    private processStepsAdminService: ProcessStepsAdminService,
+    private pageLoadingService: PageLoadingService
+  ) { }
 
-  const sub = this.processStepsAdminService.getAll().subscribe({
-    next: (response: any) => {
-      this.steps = response;
+  ngOnInit(): void {
+    this.langSub = this.languageService.currentLanguage$.subscribe(lang => {
+      console.log('PricingPackagesComponent received new language:', lang);
+      this.currentLanguage = lang;
+      this.cdr.detectChanges(); // Force instant UI re-render
+    });
+    this.getAllSteps();
+  }
+  getAllSteps(): void {
+    this.pageLoadingService.setHowItWorksLoaded(false);
 
-      this.pageLoadingService.setHowItWorksLoaded(true);
+    const sub = this.processStepsAdminService.getAll().subscribe({
+      next: (response: any) => {
+        this.steps = response;
 
-      this.cdr.detectChanges();
-    },
-    error: (err) => {
-      console.error('Error loading process steps:', err);
+        this.pageLoadingService.setHowItWorksLoaded(true);
 
-      // Stop the skeleton even if the API fails
-      this.pageLoadingService.setHowItWorksLoaded(true);
-    }
-  });
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading process steps:', err);
 
-  this.subs.push(sub);
-}
-  
-      // Helper method for static hardcoded UI text
-    t(key: string): string {
-      return this.languageService.translate(key);
-    }
-    getTranslation<T extends { languageCode: string }>(translations: T[]): T | undefined {
-      if (!translations || translations.length === 0) return undefined;
-      
-      return translations.find(t => t.languageCode.toLowerCase() === this.currentLanguage.toLowerCase()) 
-          || translations[0];
-    }
+        // Stop the skeleton even if the API fails
+        this.pageLoadingService.setHowItWorksLoaded(true);
+      }
+    });
 
-      ngOnDestroy(): void {
+    this.subs.push(sub);
+  }
+
+  // Helper method for static hardcoded UI text
+  t(key: string): string {
+    return this.languageService.translate(key);
+  }
+  getTranslation<T extends { languageCode: string }>(translations: T[]): T | undefined {
+    if (!translations || translations.length === 0) return undefined;
+
+    return translations.find(t => t.languageCode.toLowerCase() === this.currentLanguage.toLowerCase())
+      || translations[0];
+  }
+
+    goToBooking(): void {
+    this.router.navigate(['/booking']);
+  }
+
+
+  ngOnDestroy(): void {
     if (this.langSub) {
       this.langSub.unsubscribe();
     }

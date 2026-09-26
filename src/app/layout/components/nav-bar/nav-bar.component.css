@@ -14,6 +14,11 @@ header {
   z-index: 1030;
   margin: 0 !important;
 }
+.flag {
+  font-size: 20px;
+  margin-right: 10px;
+  line-height: 1;
+}
 
 /* Ensure navbar containers don't create unwanted outer side spacing on wide screens */
 .navbar, .top-bar {
@@ -71,5 +76,13 @@ header {
 
 /* Material Icons Vertical Alignment */
 mat-icon {
+  vertical-align: middle;
+}
+
+.language-flag {
+  width: 24px;
+  height: 16px;
+  object-fit: cover;
+  margin-right: 10px;
   vertical-align: middle;
 }

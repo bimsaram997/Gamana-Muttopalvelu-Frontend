@@ -1,72 +1,144 @@
 <section id="services" class="services-section py-5 bg-white">
   <div class="container py-lg-4">
-    
     <!-- Section Header -->
-    <div class="row justify-content-center text-center mb-5">
-      <div class="col-lg-8">
+    <div class="row justify-content-center text-center mb-4 mb-lg-5">
+      <div class="col-12 col-lg-8">
         <span class="badge bg-danger bg-opacity-10 text-gamana-red fw-bold px-3 py-2 rounded-pill fs-7 mb-2">
           {{ t('services.badge') }}
         </span>
+
         <h2 class="display-6 fw-black text-dark mb-3">
-          {{ t('services.title_main') }} <span class="text-gamana-red">{{ t('services.title_highlight') }}</span>
+          {{ t('services.title_main') }}
+          <span class="text-gamana-red">
+            {{ t('services.title_highlight') }}
+          </span>
         </h2>
-        <p class="lead text-muted fs-6">
+        <p class="lead text-muted fs-6 mb-0">
           {{ t('services.subheading') }}
         </p>
       </div>
     </div>
 
-    <!-- Services Grid -->
-    <div class="row g-4">
-      <div *ngFor="let service of services" class="col-12 col-md-6 col-lg-3">
-        <div class="card h-100 border-0 shadow-sm rounded-4 p-4 hover-card bg-light position-relative">
-          
-          <!-- Icon Header -->
-          <div class="service-icon-wrapper bg-gamana-burgundy text-white rounded-3 mb-3 d-inline-flex align-items-center justify-content-center shadow-sm">
-            <mat-icon class="fs-3">{{ service.icon }}</mat-icon>
+
+    <!-- Services Slider -->
+    <div *ngIf="services.length > 0" class="services-slider-wrapper">
+      <!-- Previous Button -->
+      <button *ngIf="totalPages > 1" type="button" class="service-nav-btn service-prev" [disabled]="
+          currentPage === 0 ||
+          isPageChanging
+        " (click)="previousPage()" [attr.aria-label]="'Previous services'">
+        <mat-icon>
+          chevron_left
+        </mat-icon>
+      </button>
+
+
+      <!-- Services Grid -->
+      <div class="row g-4 services-cards" [class.page-changing]="isPageChanging" [class.slide-next]="
+          pageEnterAnimation === 'next'
+        " [class.slide-previous]="
+          pageEnterAnimation === 'previous'
+        ">
+
+        <div *ngFor="let service of visibleServices" class="col-12 col-md-6 col-lg-3 service-card-wrapper">
+          <!-- Service Card -->
+          <div class="card h-100 border-0 shadow-sm rounded-4 p-4 hover-card bg-light position-relative">
+            <!-- Icon Header -->
+            <div
+              class="service-icon-wrapper bg-gamana-burgundy text-white rounded-3 mb-3 d-inline-flex align-items-center justify-content-center shadow-sm">
+              <mat-icon class="fs-3">
+                {{ service.icon }}
+              </mat-icon>
+            </div>
+
+            <!-- Subtitle -->
+            <small class="text-uppercase fw-bold text-gamana-red fs-8 mb-1 d-block tracking-wider">
+              {{ getTranslation(service.translations)?.subtitle }}
+            </small>
+
+            <!-- Title -->
+            <h3 class="fw-bold text-dark fs-5 mb-2">
+              {{ getTranslation(service.translations)?.title }}
+            </h3>
+
+            <!-- Description -->
+            <p class="text-muted fs-7 mb-4 flex-grow-1">
+              {{ getTranslation(service.translations)?.description }}
+            </p>
+
+
+            <!-- Highlights -->
+            <div class="border-top pt-3" *ngIf="
+                service.highlights &&
+                service.highlights.length > 0
+              ">
+
+              <ul class="list-unstyled mb-0 fs-7 d-flex flex-column gap-2">
+                <li *ngFor="let item of service.highlights"
+                  class="d-flex align-items-center gap-2 text-dark fw-semibold">
+                  <mat-icon class="text-gamana-red fs-6">
+                    check_circle
+                  </mat-icon>
+                  <span>
+                    {{ getTranslation(item.translations)?.text }}
+                  </span>
+                </li>
+              </ul>
+            </div>
           </div>
-
-          <small class="text-uppercase fw-bold text-gamana-red fs-8 mb-1 d-block tracking-wider">
-            {{ getTranslation(service.translations)?.subtitle }}
-          </small>
-          
-          <h3 class="fw-bold text-dark fs-5 mb-2">
-            {{ getTranslation(service.translations)?.title }}
-          </h3>
-          
-          <p class="text-muted fs-7 mb-4 flex-grow-1">
-            {{ getTranslation(service.translations)?.description }}
-          </p>
-
-          <!-- Checkmark Highlights -->
-          <div class="border-top pt-3" *ngIf="service.highlights && service.highlights.length > 0">
-            <ul class="list-unstyled mb-0 fs-7 d-flex flex-column gap-2">
-              <li *ngFor="let item of service.highlights" class="d-flex align-items-center gap-2 text-dark fw-semibold">
-                <mat-icon class="text-gamana-red fs-6">check_circle</mat-icon>
-                <span>{{ getTranslation(item.translations)?.text }}</span>
-              </li>
-            </ul>
-          </div>
-
         </div>
       </div>
+
+
+      <!-- Next Button -->
+      <button *ngIf="totalPages > 1" type="button" class="service-nav-btn service-next" [disabled]="
+          currentPage === totalPages - 1 ||
+          isPageChanging
+        " (click)="nextPage()" [attr.aria-label]="'Next services'">
+        <mat-icon>
+          chevron_right
+        </mat-icon>
+      </button>
     </div>
+
 
     <!-- Bottom Action Callout -->
     <div class="mt-5 text-center">
-      <p class="fw-bold text-muted mb-3 fs-7">{{ t('services.custom_question') }}</p>
-      <div class="d-flex justify-content-center gap-3">
-        <button 
-          type="button" 
-          (click)="gotoOffer()" 
+      <p class="fw-bold text-muted mb-3 fs-7">
+        {{ t('services.custom_question') }}
+      </p>
+
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <button type="button" (click)="gotoOffer()"
           class="btn btn-gamana-red rounded-pill px-4 py-3 fw-bold fs-6 shadow-sm text-decoration-none">
           {{ t('services.get_price_btn') }} &rarr;
         </button>
-        <a href="tel:+358414714856" class="btn btn-outline-dark rounded-pill px-4 py-3 fw-bold fs-6 text-decoration-none d-inline-flex align-items-center">
-          <mat-icon class="me-1">phone</mat-icon> +358 41 471 4856
+
+        <a href="tel:+358414714856"
+          class="btn btn-outline-dark rounded-pill px-4 py-3 fw-bold fs-6 text-decoration-none d-inline-flex align-items-center">
+          <mat-icon class="me-1">
+            phone
+          </mat-icon>
+          +358 41 471 4856
         </a>
       </div>
     </div>
 
+
+    <!-- Pagination Dots -->
+    <div *ngIf="totalPages > 1" class="services-pagination">
+      <button *ngFor="let page of pages" type="button" class="pagination-dot" [class.active]="page === currentPage"
+        [disabled]="isPageChanging" (click)="goToPage(page)" [attr.aria-label]="'Page ' + (page + 1)">
+      </button>
+    </div>
+
+
+    <!-- Page Counter -->
+    <div *ngIf="totalPages > 1" class="text-center mt-2">
+      <small class="text-muted">
+        {{ currentPage + 1 }} / {{ totalPages }}
+      </small>
+    </div>
   </div>
+
 </section>
