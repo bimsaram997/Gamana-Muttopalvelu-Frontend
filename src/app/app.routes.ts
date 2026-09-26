@@ -10,11 +10,13 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        component: LandingPageComponent
+        component: LandingPageComponent,
+       
       },
       {
         path: 'booking',
         loadComponent: () => import('./features/bookings/booking-wizard/booking-wizard.component').then(m => m.BookingWizardComponent),
+         
         providers: [
           MatStepperIntl // Fixes lazy-loaded MatStepper NullInjectorError
         ]

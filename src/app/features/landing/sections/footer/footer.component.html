@@ -1,3 +1,4 @@
+
 <footer id="contact" class="footer-section bg-gamana-burgundy text-white pt-5 pb-3">
   <div class="container py-lg-3">
     <div class="row g-4 justify-content-between mb-4">
@@ -11,11 +12,22 @@
         <p class="text-white-80 fs-7 mb-4">
           {{ t('footer.mission_text') }}
         </p>
+
         <div class="d-flex align-items-center gap-2">
-          <a [href]="whatsappHref" target="_blank" class="btn btn-success rounded-circle d-flex align-items-center justify-content-center p-2 shadow-sm" style="width: 40px; height: 40px;">
+          <a
+            [href]="whatsappHref"
+            target="_blank"
+            class="btn btn-success rounded-circle d-flex align-items-center justify-content-center p-2 shadow-sm"
+            style="width: 40px; height: 40px;"
+          >
             <i class="bi bi-whatsapp fs-5"></i>
           </a>
-          <a [href]="phoneHref" class="btn btn-gamana-red rounded-circle d-flex align-items-center justify-content-center p-2 shadow-sm" style="width: 40px; height: 40px;">
+
+          <a
+            [href]="phoneHref"
+            class="btn btn-gamana-red rounded-circle d-flex align-items-center justify-content-center p-2 shadow-sm"
+            style="width: 40px; height: 40px;"
+          >
             <mat-icon class="fs-5">phone</mat-icon>
           </a>
         </div>
@@ -23,18 +35,40 @@
 
       <!-- Quick Navigation Links -->
       <div class="col-6 col-md-2">
-        <h6 class="fw-bold text-white text-uppercase tracking-wider fs-7 mb-3">{{ t('footer.services_title') }}</h6>
+        <h6 class="fw-bold text-white text-uppercase tracking-wider fs-7 mb-3">
+          {{ t('footer.services_title') }}
+        </h6>
+
         <ul class="list-unstyled fs-7 text-white-80 d-flex flex-column gap-2 mb-0">
-          <li><a routerLink="/" fragment="services" class="text-white-80 text-decoration-none">{{ t('footer.service_apartment') }}</a></li>
-          <li><a routerLink="/" fragment="services" class="text-white-80 text-decoration-none">{{ t('footer.service_store_pickup') }}</a></li>
-          <li><a routerLink="/" fragment="services" class="text-white-80 text-decoration-none">{{ t('footer.service_city_transfer') }}</a></li>
-          <li><a routerLink="/" fragment="services" class="text-white-80 text-decoration-none">{{ t('footer.service_cleaning') }}</a></li>
+          <li>
+            <a routerLink="/" fragment="services" class="text-white-80 text-decoration-none">
+              {{ t('footer.service_apartment') }}
+            </a>
+          </li>
+          <li>
+            <a routerLink="/" fragment="services" class="text-white-80 text-decoration-none">
+              {{ t('footer.service_store_pickup') }}
+            </a>
+          </li>
+          <li>
+            <a routerLink="/" fragment="services" class="text-white-80 text-decoration-none">
+              {{ t('footer.service_city_transfer') }}
+            </a>
+          </li>
+          <li>
+            <a routerLink="/" fragment="services" class="text-white-80 text-decoration-none">
+              {{ t('footer.service_cleaning') }}
+            </a>
+          </li>
         </ul>
       </div>
 
       <!-- Service Areas Column -->
       <div class="col-6 col-md-3">
-        <h6 class="fw-bold text-white text-uppercase tracking-wider fs-7 mb-3">{{ t('footer.area_title') }}</h6>
+        <h6 class="fw-bold text-white text-uppercase tracking-wider fs-7 mb-3">
+          {{ t('footer.area_title') }}
+        </h6>
+
         <ul class="list-unstyled fs-7 text-white-80 d-flex flex-column gap-2 mb-0">
           <li>{{ t('footer.area_tampere') }}</li>
           <li>{{ t('footer.area_suburbs1') }}</li>
@@ -45,16 +79,23 @@
 
       <!-- Contact Us Column -->
       <div class="col-12 col-md-3">
-        <h6 class="fw-bold text-white text-uppercase tracking-wider fs-7 mb-3">{{ t('footer.contact_title') }}</h6>
+        <h6 class="fw-bold text-white text-uppercase tracking-wider fs-7 mb-3">
+          {{ t('footer.contact_title') }}
+        </h6>
+
         <div class="d-flex flex-column gap-3 fs-7 text-white-80">
           <div class="d-flex align-items-center gap-2">
             <mat-icon class="text-gamana-red">phone</mat-icon>
-            <a [href]="phoneHref" class="text-white text-decoration-none fw-bold">{{ phoneNumber }}</a>
+            <a [href]="phoneHref" class="text-white text-decoration-none fw-bold">
+              {{ phoneNumber }}
+            </a>
           </div>
+
           <div class="d-flex align-items-center gap-2">
             <mat-icon class="text-gamana-red">schedule</mat-icon>
             <span>{{ t('footer.working_hours') }}</span>
           </div>
+
           <div class="d-flex align-items-center gap-2">
             <mat-icon class="text-gamana-red">location_on</mat-icon>
             <span>{{ t('footer.location') }}</span>
@@ -65,9 +106,16 @@
     </div>
 
     <!-- Bottom Copyright Bar -->
-    <div class="border-top border-secondary border-opacity-25 pt-3 mt-4 d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 fs-8 text-white-80">
-      <span>&copy; {{ currentYear }} Gamana Muuttopalvelu. {{ t('footer.all_rights_reserved') }}</span>
-      <span>{{ t('footer.pricing_note') }}</span>
+    <div
+      class="border-top border-secondary border-opacity-25 pt-3 mt-4 d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 fs-8 text-white-80"
+    >
+      <span>
+        &copy; {{ currentYear }} Gamana Muuttopalvelu.
+        {{ t('footer.all_rights_reserved') }}
+      </span>
+
+      <span> Powered by <strong class="text-white">LuminaWork</strong> </span>
     </div>
   </div>
 </footer>
+

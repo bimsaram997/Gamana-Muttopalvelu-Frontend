@@ -28,10 +28,25 @@
           <mat-icon class="me-1">language</mat-icon> {{ selectedLanguage }}
           <mat-icon>arrow_drop_down</mat-icon>
         </button>
-        <mat-menu #langMenu="matMenu">
-          <button mat-menu-item (click)="setLanguage('EN')">🇬🇧 English</button>
-          <button mat-menu-item (click)="setLanguage('FI')">🇫🇮 Suomi</button>
-        </mat-menu>
+       <mat-menu #langMenu="matMenu">
+  <button mat-menu-item (click)="setLanguage('EN')">
+    <img
+      src="assets/flags/gb.svg"
+      alt="English"
+      class="language-flag"
+    />
+    <span>English</span>
+  </button>
+
+  <button mat-menu-item (click)="setLanguage('FI')">
+    <img
+      src="assets/flags/fi.svg"
+      alt="Finnish"
+      class="language-flag"
+    />
+    <span>Suomi</span>
+  </button>
+</mat-menu>
       </div>
 
     </div>

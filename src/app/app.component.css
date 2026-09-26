@@ -1,0 +1,18 @@
+.route-container {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.route-container.route-entering {
+  animation: routeFadeIn 350ms ease-out both;
+}
+
+@keyframes routeFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

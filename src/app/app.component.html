@@ -1,4 +1,6 @@
-
-
-
-<router-outlet />
+<div
+  class="route-container"
+  [class.route-entering]="isRouteEntering"
+>
+  <router-outlet></router-outlet>
+</div>

@@ -45,11 +45,12 @@
 
     <!-- Call to Action -->
     <div class="mt-5 text-center">
-      <a 
-        routerLink="/booking" 
-        class="btn btn-gamana-red rounded-pill px-4 py-3 fw-bold fs-6 shadow-sm text-decoration-none">
-        {{ t('howItWorks.cta_button') }} &rarr;
-      </a>
+    <button 
+            type="button"
+            (click)="goToBooking()"
+            class="btn btn-gamana-red rounded-pill px-4 py-3 fw-bold fs-6 shadow text-decoration-none">
+            {{ t('hero.book_now') }} &rarr;
+          </button>
     </div>
 
   </div>
