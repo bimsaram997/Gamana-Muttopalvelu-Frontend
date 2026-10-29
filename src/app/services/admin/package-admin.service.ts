@@ -14,7 +14,7 @@ export class PackageAdminService {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<PackageResponseDto[]> {
-    return this.http.get<PackageResponseDto[]>(this.baseUrl);
+    return this.http.get<PackageResponseDto[]>(`${this.baseUrl}/dropdown`);
   }
 
   getById(id: number): Observable<PackageResponseDto> {
